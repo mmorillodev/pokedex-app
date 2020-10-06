@@ -8,13 +8,15 @@
     margin: 0 auto;
   
     .pokemon-image {
-      width: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80px;
       border-radius: inherit;
       background: #FFA34E;
 
       img {
         object-fit: cover;
-        width: 80px;
       }
     }
 

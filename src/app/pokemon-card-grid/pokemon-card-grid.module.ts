@@ -7,8 +7,6 @@ import { PokemonCardGridComponent } from './pokemon-card-grid.page';
 
 import { PokemonCardModule } from '../pokemon-card/pokemon-card.module';
 
-
-
 @NgModule({
   imports: [
     CommonModule,

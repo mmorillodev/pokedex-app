@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'pokemon-card-grid',
@@ -9,16 +10,34 @@ import { HttpClient } from '@angular/common/http';
 export class PokemonCardGridComponent implements OnInit {
 
   public pokeApiResult: PokemonGeneral;
+  private isLoading: boolean;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private loadingController: LoadingController) { }
 
   ngOnInit(): void {
-    this.httpClient.get('https://pokeapi.co/api/v2/pokemon') 
+    this.createLoading('Fetching pokemon info...')
+      .then(() => this.requestPokeAPI())
+      .then(() => {
+        this.loadingController.dismiss();
+      });
+  }
+
+  requestPokeAPI() {
+    this.httpClient.get('https://pokeapi.co/api/v2/pokemon')
       .toPromise()
-      .then((response: PokemonGeneral) => {
-        this.pokeApiResult = response;
-        console.log(this.pokeApiResult);
+      .then(this.assignResponse.bind(this));
+  }
+
+  assignResponse(response: PokemonGeneral) {
+    this.pokeApiResult = response;
+  }
+
+  async createLoading(message: string) {
+    const loading = await this.loadingController.create({
+      message
     });
+
+    return await loading.present();
   }
 }
 

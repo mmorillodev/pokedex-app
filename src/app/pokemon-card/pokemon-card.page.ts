@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+import { Pokemon } from '../../interfaces/Pokemon';
+
 @Component({
   selector: 'pokemon-card',
   templateUrl: 'pokemon-card.page.html',
@@ -8,10 +10,11 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PokemonCardComponent implements OnInit {
 
-  @Input() name: string;
-  @Input() url!: string;
-  pokemonRefId: number;
-  pokemon: Pokemon;
+  @Input() public name: string;
+  @Input() public url!: string;
+  public pokemonRefId: number;
+  public pokemon: Pokemon;
+  public ready = false;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -20,29 +23,10 @@ export class PokemonCardComponent implements OnInit {
 
     this.pokemonRefId = Number(splittedUrl[splittedUrl.length - 2]);
 
-    this.httpClient.get(this.url).toPromise().then((pokemon: Pokemon) => {
-      this.pokemon = pokemon;
-    });
+    this.httpClient.get(this.url).toPromise()
+      .then((pokemon: Pokemon) => {
+        this.pokemon = pokemon;
+        this.ready = true;
+      });
   }
-}
-
-interface Pokemon {
-  abilities: PokemonAbility[];
-  sprites: Sprites;
-}
-
-interface PokemonAbility {
-
-}
-
-interface Sprites {
-  back_default: string;
-  back_female: string;
-  back_shiny: string;
-  back_shiny_female: string;
-  front_default: string;
-  front_female: string;
-  front_shiny: string;
-  front_shiny_female: string;
-  other: object;
 }
