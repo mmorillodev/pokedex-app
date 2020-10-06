@@ -1,0 +1,15 @@
+<div class="pokemon-grid__item">
+    <div class="pokemon-image">
+      <img src="{{pokemon.sprites.other['official-artwork'].front_default}}" *ngIf="pokemon.sprites.other['official-artwork'].front_default !== undefined">
+    </div>
+    <div class="pokemon-infos">
+      <span class="pokemon-name">{{name}}</span>
+      <div class="pokemon-infos__dtl">
+        Type:
+        <span class="pokemon-type" *ngFor="let type of pokemon.types">
+          {{type.type.name}}
+        </span>
+      </div>
+    </div>
+    <div class="pokemon-ref-id">No: {{pokemonRefId}}</div>
+</div>
