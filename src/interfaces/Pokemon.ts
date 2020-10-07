@@ -1,6 +1,7 @@
 export interface Pokemon {
     abilities: PokemonAbility[];
     sprites: Sprites;
+    types: Type[];
 }
 
 interface PokemonAbility {
@@ -17,4 +18,13 @@ interface Sprites {
     front_shiny: string;
     front_shiny_female: string;
     other: object;
+}
+
+interface Type {
+    type: TypeCompl;
+}
+
+interface TypeCompl {
+    name: string;
+    color: string;
 }
