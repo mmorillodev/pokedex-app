@@ -1,5 +1,5 @@
 <div class="pokemon-grid__item" [routerLink]="['/pokemon', pokemonRefId]">
-    <div class="pokemon-image">
+    <div class="pokemon-image" [ngStyle]="{'background': pokemon.types[0].type.color}">
       <img src="{{pokemon.sprites.other['official-artwork'].front_default}}" *ngIf="fetchCompleted else loading_image">
       <ng-template #loading_image>
         <ion-spinner name="crescent"></ion-spinner>
