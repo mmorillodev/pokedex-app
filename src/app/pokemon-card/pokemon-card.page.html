@@ -1,6 +1,6 @@
 <div class="pokemon-grid__item" [routerLink]="['/pokemon', pokemonRefId]">
     <div class="pokemon-image">
-      <img src="{{pokemon.sprites.other['official-artwork'].front_default}}" *ngIf="ready else loading_image">
+      <img src="{{pokemon.sprites.other['official-artwork'].front_default}}" *ngIf="fetchCompleted else loading_image">
       <ng-template #loading_image>
         <ion-spinner name="crescent"></ion-spinner>
       </ng-template>
@@ -8,9 +8,8 @@
     <div class="pokemon-infos">
       <span class="pokemon-name">{{name}}</span>
       <div class="pokemon-infos__dtl">
-        Type:
-        <span *ngIf="ready">
-          <span class="pokemon-type" *ngFor="let type of pokemon.types">
+        <span *ngIf="fetchCompleted">
+          <span class="pokemon-type" *ngFor="let type of pokemon.types" [ngStyle]="{'background': type.type.color}">
             {{type.type.name}}
           </span>
         </span>

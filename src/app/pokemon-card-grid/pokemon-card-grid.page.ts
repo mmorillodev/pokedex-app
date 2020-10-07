@@ -16,15 +16,12 @@ export class PokemonCardGridComponent implements OnInit {
 
   ngOnInit(): void {
     this.createLoading('Fetching pokemon info...')
-      .then(() => this.requestPokeAPI())
-      .then(() => {
-        this.loadingController.dismiss();
-      });
+      .then(this.requestPokeAPI.bind(this))
+      .then(() => this.loadingController.dismiss());
   }
 
   requestPokeAPI() {
-    this.httpClient.get('https://pokeapi.co/api/v2/pokemon')
-      .toPromise()
+    this.httpClient.get('https://pokeapi.co/api/v2/pokemon').toPromise()
       .then(this.assignResponse.bind(this));
   }
 

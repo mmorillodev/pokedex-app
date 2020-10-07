@@ -31,9 +31,17 @@
       }
 
       .pokemon-type {
-        &:not(:last-child)::after {
-            content: ';';
+        text-align: center;
+        border-radius: 1.25rem;
+        padding: 0 .4em;
+
+        &:not(:last-child) {
+          margin-right: 5px;
         }
+      }
+
+      .pokemon-infos__dtl {
+        margin-top: .5rem;
       }
     }
 
