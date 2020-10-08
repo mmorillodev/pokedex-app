@@ -1,27 +1,34 @@
-#container {
-  text-align: center;
+#container {}
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+.pis0 {
+  padding-inline-start: unset;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+ion-select {
+  padding-left: 0;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
+ion-searchbar {
+  --icon-color: white; 
+ }
 
-  color: #8c8c8c;
+.header {
+  position: sticky;
+  top: 0;
+  background: #A02F40;
+  border-radius: .25rem;
 
-  margin: 0;
-}
+  & > * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+ 
+  & > *:nth-child(1) {
+    flex: 3;
+  }
 
-#container a {
-  text-decoration: none;
+  & > *:nth-child(2) {
+    flex: 1;
+  }
 }
