@@ -7,8 +7,6 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  public listItems = [0, 1, 2, 3, 4, 5, 6, 7];
-
   constructor() {}
 
 }
