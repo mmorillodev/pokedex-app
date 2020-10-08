@@ -6,8 +6,8 @@ import colors from '../../resources/colors';
 
 @Component({
   selector: 'pokemon-card',
-  templateUrl: 'pokemon-card.page.html',
-  styleUrls: ['pokemon-card.page.scss'],
+  templateUrl: 'pokemon-card.component.html',
+  styleUrls: ['pokemon-card.component.scss'],
 })
 export class PokemonCardComponent implements OnInit {
 
