@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Pokemon } from '../../interfaces/Pokemon';
@@ -13,6 +13,7 @@ export class PokemonCardComponent implements OnInit {
 
   @Input() public name: string;
   @Input() public url!: string;
+  @Output() pokemonFetchComplete: EventEmitter<Pokemon>;
 
   public pokemonRefId: number;
   public pokemon: Pokemon;
@@ -20,7 +21,9 @@ export class PokemonCardComponent implements OnInit {
   public fetchCompleted = false;
   public colors: object;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+    this.pokemonFetchComplete = new EventEmitter<Pokemon>();
+  }
 
   ngOnInit(): void {
     this.extractRefId();
@@ -35,6 +38,7 @@ export class PokemonCardComponent implements OnInit {
 
   finishPokemonFetch() {
     this.fetchCompleted = true;
+    this.pokemonFetchComplete.emit(this.pokemon);
   }
 
   assignPokemon(pokemon: Pokemon) {

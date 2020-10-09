@@ -2,7 +2,7 @@
   <div id="container">
     <ion-row class="header">
       <ion-col>
-        <ion-searchbar class="pis0 search"></ion-searchbar>
+        <ion-searchbar class="pis0 search" (ionChange)="applySearch($event.target.value)"></ion-searchbar>
       </ion-col>
       <ion-col>
         <ion-select value="pokemon" okText="Ok" cancelText="Cancel" class="select">
@@ -12,6 +12,6 @@
         </ion-select>
       </ion-col>
     </ion-row>
-    <pokemon-card-grid></pokemon-card-grid>
+    <pokemon-card-grid [filter]="searchValue"></pokemon-card-grid>
   </div>
 </ion-content>

@@ -10,7 +10,9 @@ import { LoadingController } from '@ionic/angular';
 export class PokemonCardGridComponent implements OnInit {
 
   public pokeApiResult: PokemonGeneral;
-  private isLoading: boolean;
+  public filteredPokemons: SinglePokemon[];
+  // TODO - Create an event that will be triggered when this var change
+  @Input() public filter: string;
 
   constructor(private httpClient: HttpClient, private loadingController: LoadingController) { }
 
@@ -20,21 +22,43 @@ export class PokemonCardGridComponent implements OnInit {
       .then(() => this.loadingController.dismiss());
   }
 
-  requestPokeAPI() {
+  // TODO - when this event is triggered, add the pokemon infos to pokeApiResult and filteredPokemons variables
+  public onPokemonFetchComplete(event: any) {
+    console.log(event);
+  }
+
+  private requestPokeAPI() {
     this.httpClient.get('https://pokeapi.co/api/v2/pokemon').toPromise()
       .then(this.assignResponse.bind(this));
   }
 
-  assignResponse(response: PokemonGeneral) {
+  private assignResponse(response: PokemonGeneral) {
     this.pokeApiResult = response;
+    this.filteredPokemons = response.results;
   }
 
-  async createLoading(message: string) {
+  private async createLoading(message: string) {
     const loading = await this.loadingController.create({
       message
     });
 
     return await loading.present();
+  }
+
+  // TODO - Call this when filter variable changes
+  private applyFilter() {
+    this.filteredPokemons = this.pokeApiResult.results.filter(this.filterHandler.bind(this));
+  }
+
+  private filterHandler(pokemon: SinglePokemon) {
+    const normalizedPokeName = this.normalizeString(pokemon.name);
+    const normalizedFilter = this.normalizeString(this.filter);
+
+    return normalizedPokeName.includes(normalizedFilter);
+  }
+
+  private normalizeString(value: string) {
+    return value.trim().toLocaleLowerCase();
   }
 }
 
