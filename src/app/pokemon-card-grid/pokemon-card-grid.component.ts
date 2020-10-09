@@ -4,8 +4,8 @@ import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'pokemon-card-grid',
-  templateUrl: 'pokemon-card-grid.page.html',
-  styleUrls: ['pokemon-card-grid.page.scss'],
+  templateUrl: 'pokemon-card-grid.component.html',
+  styleUrls: ['pokemon-card-grid.component.scss'],
 })
 export class PokemonCardGridComponent implements OnInit {
 

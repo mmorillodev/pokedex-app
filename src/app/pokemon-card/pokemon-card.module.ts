@@ -4,7 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { PokemonCardComponent } from './pokemon-card.page';
+import { PokemonCardComponent } from './pokemon-card.component';
 
 
 @NgModule({
