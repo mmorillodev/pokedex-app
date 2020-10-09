@@ -1,4 +1,5 @@
-export interface Pokemon {
+export interface CompletePokemon {
+    id: number;
     abilities: PokemonAbility[];
     sprites: Sprites;
     types: Type[];

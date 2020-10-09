@@ -2,6 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 
+import { PokeAPIResult, SimplePokemon } from '../../interfaces/PokeAPIResult';
+import { CompletePokemon } from '../../interfaces/CompletePokemon';
+
 @Component({
   selector: 'pokemon-card-grid',
   templateUrl: 'pokemon-card-grid.component.html',
@@ -9,10 +12,8 @@ import { LoadingController } from '@ionic/angular';
 })
 export class PokemonCardGridComponent implements OnInit {
 
-  public pokeApiResult: PokemonGeneral;
-  public filteredPokemons: SinglePokemon[];
-  // TODO - Create an event that will be triggered when this var change
-  @Input() public filter: string;
+  public pokeApiResult: PokeAPIResult;
+  @Input() public filterClause: string;
 
   constructor(private httpClient: HttpClient, private loadingController: LoadingController) { }
 
@@ -22,9 +23,17 @@ export class PokemonCardGridComponent implements OnInit {
       .then(() => this.loadingController.dismiss());
   }
 
-  // TODO - when this event is triggered, add the pokemon infos to pokeApiResult and filteredPokemons variables
-  public onPokemonFetchComplete(event: any) {
-    console.log(event);
+  public onPokemonFetchComplete(pokemon: CompletePokemon) {
+    this.completeSinglePokemonInfo(pokemon);
+  }
+
+  private completeSinglePokemonInfo(pokemon: CompletePokemon): void {
+    const simplePokemonTarget = this.pokeApiResult.results.find(
+      (simplePokemon: SimplePokemon) =>
+        this.pokemonComparator(simplePokemon, pokemon)
+    );
+
+    console.log(simplePokemonTarget);
   }
 
   private requestPokeAPI() {
@@ -32,9 +41,8 @@ export class PokemonCardGridComponent implements OnInit {
       .then(this.assignResponse.bind(this));
   }
 
-  private assignResponse(response: PokemonGeneral) {
+  private assignResponse(response: PokeAPIResult) {
     this.pokeApiResult = response;
-    this.filteredPokemons = response.results;
   }
 
   private async createLoading(message: string) {
@@ -45,31 +53,24 @@ export class PokemonCardGridComponent implements OnInit {
     return await loading.present();
   }
 
-  // TODO - Call this when filter variable changes
-  private applyFilter() {
-    this.filteredPokemons = this.pokeApiResult.results.filter(this.filterHandler.bind(this));
-  }
-
-  private filterHandler(pokemon: SinglePokemon) {
+  public filterHandler(pokemon: SimplePokemon) {
     const normalizedPokeName = this.normalizeString(pokemon.name);
-    const normalizedFilter = this.normalizeString(this.filter);
+    const normalizedFilter = this.normalizeString(this.filterClause);
 
     return normalizedPokeName.includes(normalizedFilter);
   }
 
-  private normalizeString(value: string) {
-    return value.trim().toLocaleLowerCase();
+  private pokemonComparator(simplePokemon: SimplePokemon, pokemon: CompletePokemon): boolean {
+    return this.extractRefIdFromURL(simplePokemon.url) === pokemon.id;
   }
-}
 
-interface PokemonGeneral {
-  count: number;
-  next: string;
-  previous: string;
-  results: SinglePokemon[];
-}
+  private normalizeString(value: string) {
+    return value?.trim().toLocaleLowerCase();
+  }
 
-interface SinglePokemon {
-  name: string;
-  url: string;
+  private extractRefIdFromURL(url: string): number {
+    const splittedUrl = url.split('/');
+
+    return Number(splittedUrl[splittedUrl.length - 2]);
+  }
 }

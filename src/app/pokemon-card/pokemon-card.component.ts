@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Pokemon } from '../../interfaces/Pokemon';
+import { CompletePokemon } from '../../interfaces/CompletePokemon';
 import colors from '../../resources/colors';
 
 @Component({
@@ -13,20 +13,20 @@ export class PokemonCardComponent implements OnInit {
 
   @Input() public name: string;
   @Input() public url!: string;
-  @Output() pokemonFetchComplete: EventEmitter<Pokemon>;
+  @Output() pokemonFetchComplete: EventEmitter<CompletePokemon>;
 
   public pokemonRefId: number;
-  public pokemon: Pokemon;
+  public pokemon: CompletePokemon;
 
   public fetchCompleted = false;
   public colors: object;
 
   constructor(private httpClient: HttpClient) {
-    this.pokemonFetchComplete = new EventEmitter<Pokemon>();
+    this.pokemonFetchComplete = new EventEmitter<CompletePokemon>();
   }
 
   ngOnInit(): void {
-    this.extractRefId();
+    this.extractRefIdFromPokemonUrl();
     this.startPokemonFetch();
   }
 
@@ -41,14 +41,14 @@ export class PokemonCardComponent implements OnInit {
     this.pokemonFetchComplete.emit(this.pokemon);
   }
 
-  assignPokemon(pokemon: Pokemon) {
+  assignPokemon(pokemon: CompletePokemon) {
     this.pokemon = pokemon;
     this.pokemon.types.forEach(type => {
       type.type.color = `#${colors[type.type.name]}`;
     });
   }
 
-  extractRefId() {
+  extractRefIdFromPokemonUrl() {
     const splittedUrl = this.url.split('/');
     this.pokemonRefId = Number(splittedUrl[splittedUrl.length - 2]);
   }
