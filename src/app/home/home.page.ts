@@ -12,7 +12,6 @@ export class HomePage {
   constructor() {}
 
   applySearch(searchValue: string) {
-    console.log(searchValue)
     this.searchValue = searchValue;
   }
 }
