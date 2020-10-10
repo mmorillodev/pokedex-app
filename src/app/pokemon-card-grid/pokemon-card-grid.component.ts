@@ -73,7 +73,7 @@ export class PokemonCardGridComponent implements OnInit {
       validPokemon = true;
     }
 
-    const typesFinder = (type: Type) => 
+    const typesFinder = (type: Type) =>
       this.normalizeString(type.type.name).includes(normalizedFilterClause);
 
     if (types.some(typesFinder)) {
