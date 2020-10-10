@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 
+import { DEFAULT_POKE_API_URL } from '../../resources/strings';
 import { PokeAPIResult, PokeAPIPokemon } from '../../interfaces/PokeAPIResult';
 import { CompletePokemon } from '../../interfaces/CompletePokemon';
 
@@ -14,15 +15,44 @@ import { arrayIncludesString, stringIncludes, normalizeString } from '../../util
 })
 export class PokemonCardGridComponent implements OnInit {
 
-  public pokeApiResult: PokeAPIResult;
   @Input() public filterClause: string;
+
+  public pokeApiResult: PokeAPIResult;
+  public loading = true;
 
   constructor(private httpClient: HttpClient, private loadingController: LoadingController) { }
 
-  ngOnInit(): void {
-    this.createLoading('Fetching pokemon info...')
-      .then(this.requestPokeAPI.bind(this))
-      .then(() => this.loadingController.dismiss());
+  public async ngOnInit() {
+    await this.createLoading('Fetching pokemon info...');
+    this.requestPokeAPI();
+    this.dismissLoading();
+  }
+
+  public async requestPokeAPI() {
+    const response: PokeAPIResult = await this.makeRequest(DEFAULT_POKE_API_URL) as PokeAPIResult;
+    this.assignResponse(response);
+  }
+
+  private assignResponse(response: PokeAPIResult) {
+    this.pokeApiResult = response;
+  }
+
+  public async fetchNextPokemonBatch(infinityScrollEvent) {
+    const response: PokeAPIResult = await this.makeRequest(this.pokeApiResult.next) as PokeAPIResult;
+    this.appendPokemonAndSetNext(response);
+    infinityScrollEvent.target.complete();
+  }
+
+  private makeRequest(url: string): Promise<any> {
+    return this.httpClient.get(url).toPromise();
+  }
+
+  private appendPokemonAndSetNext(response: PokeAPIResult) {
+    this.pokeApiResult.results = [
+      ...this.pokeApiResult.results,
+      ...response.results
+    ];
+    this.pokeApiResult.next = response.next;
   }
 
   public onPokemonFetchComplete(completePokemon: CompletePokemon) {
@@ -38,21 +68,20 @@ export class PokemonCardGridComponent implements OnInit {
     simplePokemonTarget.additionalInfo = completePokemon;
   }
 
-  private requestPokeAPI() {
-    this.httpClient.get('https://pokeapi.co/api/v2/pokemon').toPromise()
-      .then(this.assignResponse.bind(this));
-  }
-
-  private assignResponse(response: PokeAPIResult) {
-    this.pokeApiResult = response;
-  }
-
   private async createLoading(message: string) {
+
+    this.loading = true;
+
     const loading = await this.loadingController.create({
       message
     });
 
     return await loading.present();
+  }
+
+  private async dismissLoading() {
+    this.loading = false;
+    await this.loadingController.dismiss();
   }
 
   public filterHandler(pokeAPIPokemon: PokeAPIPokemon): boolean {
@@ -77,5 +106,9 @@ export class PokemonCardGridComponent implements OnInit {
     const spittedUrl = url.split('/');
 
     return Number(spittedUrl[spittedUrl.length - 2]);
+  }
+
+  public stringIsEmpty(value: string) {
+    return value === undefined || value === null || value <= ' ';
   }
 }

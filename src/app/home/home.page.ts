@@ -11,7 +11,7 @@ export class HomePage {
 
   constructor() {}
 
-  applySearch(searchValue: string) {
-    this.searchValue = searchValue;
+  applySearch({target: { value }}) {
+    this.searchValue = value;
   }
 }

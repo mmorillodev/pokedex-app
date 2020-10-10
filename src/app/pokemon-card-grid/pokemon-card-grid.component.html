@@ -1,9 +1,16 @@
-<div class="pokemon-grid" *ngIf="pokeApiResult !== undefined">
+<div class="pokemon-grid" *ngIf="!loading">
   <app-pokemon-card 
-    *ngFor="let pokemon of (filterClause === undefined ? pokeApiResult.results : pokeApiResult.results.filter(filterHandler.bind(this)))" 
+    *ngFor="let pokemon of (stringIsEmpty(filterClause) ? pokeApiResult.results : pokeApiResult.results.filter(filterHandler.bind(this)))" 
     name="{{pokemon.name}}" 
     url="{{pokemon.url}}" 
     (pokemonFetchComplete)="onPokemonFetchComplete($event)"
   ></app-pokemon-card>
   <span class="no-content">No content to display</span>
 </div>
+
+<ion-infinite-scroll threshold="5%" (ionInfinite)="fetchNextPokemonBatch($event)">
+  <ion-infinite-scroll-content
+    loadingSpinner="bubbles"
+    loadingText="Hang tight...">
+  </ion-infinite-scroll-content>
+</ion-infinite-scroll>
