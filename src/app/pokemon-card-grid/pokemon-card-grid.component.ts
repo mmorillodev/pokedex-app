@@ -5,6 +5,8 @@ import { LoadingController } from '@ionic/angular';
 import { PokeAPIResult, PokeAPIPokemon } from '../../interfaces/PokeAPIResult';
 import { CompletePokemon, Type } from '../../interfaces/CompletePokemon';
 
+import { arrayIncludesString, stringIncludes, normalizeString } from '../../utils/utils';
+
 @Component({
   selector: 'pokemon-card-grid',
   templateUrl: 'pokemon-card-grid.component.html',
@@ -62,32 +64,13 @@ export class PokemonCardGridComponent implements OnInit {
       }
     } = pokeAPIPokemon;
 
-    const normalizedFilterClause = this.normalizeString(this.filterClause);
-    let validPokemon = false;
-
-    if (this.normalizeString(name).includes(normalizedFilterClause)) {
-      validPokemon = true;
-    } else if (this.normalizeString(id.toString()).includes(normalizedFilterClause)) {
-      validPokemon = true;
-    } else {
-
-      const typesFinder = (type: Type) =>
-        this.normalizeString(type.type.name).includes(normalizedFilterClause);
-
-      if (types.some(typesFinder)) {
-        validPokemon = true;
-      }
-    }
-
-    return validPokemon;
+    return stringIncludes(name, this.filterClause) 
+      || stringIncludes(id.toString(), this.filterClause)
+      || arrayIncludesString(types.map(e => e.type.name), this.filterClause);
   }
 
   private compareSimpleAndCompletePokemons(pokeAPIPokemon: PokeAPIPokemon, completePokemon: CompletePokemon): boolean {
     return this.extractRefIdFromURL(pokeAPIPokemon.url) === completePokemon.id;
-  }
-
-  private normalizeString(value: string) {
-    return value?.trim().toLocaleLowerCase();
   }
 
   private extractRefIdFromURL(url: string): number {
