@@ -19,36 +19,39 @@ export class PokemonCardComponent implements OnInit {
   public pokemon: CompletePokemon;
 
   public fetchCompleted = false;
-  public colors: object;
 
   constructor(private httpClient: HttpClient) {
     this.pokemonFetchComplete = new EventEmitter<CompletePokemon>();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.extractRefIdFromPokemonUrl();
     this.startPokemonFetch();
   }
 
-  startPokemonFetch() {
-    this.httpClient.get(this.url).toPromise()
-      .then(this.assignPokemon.bind(this))
-      .then(this.finishPokemonFetch.bind(this));
+  private async startPokemonFetch() {
+    const response = await this.makeGetRequest(this.url) as CompletePokemon;
+    this.assignPokemonAndColor(response);
+    this.finishPokemonFetch();
   }
 
-  finishPokemonFetch() {
+  private finishPokemonFetch() {
     this.fetchCompleted = true;
     this.pokemonFetchComplete.emit(this.pokemon);
   }
 
-  assignPokemon(pokemon: CompletePokemon) {
+  private makeGetRequest(url: string): Promise<any> {
+    return this.httpClient.get(url).toPromise();
+  }
+
+  private assignPokemonAndColor(pokemon: CompletePokemon) {
     this.pokemon = pokemon;
     this.pokemon.types.forEach(type => {
       type.type.color = `#${colors[type.type.name]}`;
     });
   }
 
-  extractRefIdFromPokemonUrl() {
+  private extractRefIdFromPokemonUrl() {
     const splittedUrl = this.url.split('/');
     this.pokemonRefId = Number(splittedUrl[splittedUrl.length - 2]);
   }
