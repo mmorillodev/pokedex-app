@@ -7,6 +7,11 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
+  public searchValue: string;
+
   constructor() {}
 
+  applySearch(searchValue: string) {
+    this.searchValue = searchValue;
+  }
 }

@@ -2,15 +2,20 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 
+import { PokeAPIResult, PokeAPIPokemon } from '../../interfaces/PokeAPIResult';
+import { CompletePokemon } from '../../interfaces/CompletePokemon';
+
+import { arrayIncludesString, stringIncludes, normalizeString } from '../../utils/utils';
+
 @Component({
-  selector: 'pokemon-card-grid',
+  selector: 'app-pokemon-card-grid',
   templateUrl: 'pokemon-card-grid.component.html',
   styleUrls: ['pokemon-card-grid.component.scss'],
 })
 export class PokemonCardGridComponent implements OnInit {
 
-  public pokeApiResult: PokemonGeneral;
-  private isLoading: boolean;
+  public pokeApiResult: PokeAPIResult;
+  @Input() public filterClause: string;
 
   constructor(private httpClient: HttpClient, private loadingController: LoadingController) { }
 
@@ -20,32 +25,57 @@ export class PokemonCardGridComponent implements OnInit {
       .then(() => this.loadingController.dismiss());
   }
 
-  requestPokeAPI() {
+  public onPokemonFetchComplete(completePokemon: CompletePokemon) {
+    this.completeSinglePokemonInfo(completePokemon);
+  }
+
+  private completeSinglePokemonInfo(completePokemon: CompletePokemon): void {
+    const simplePokemonTarget = this.pokeApiResult.results.find(
+      (pokeAPIPokemon: PokeAPIPokemon) =>
+        this.compareSimpleAndCompletePokemons(pokeAPIPokemon, completePokemon)
+    );
+
+    simplePokemonTarget.additionalInfo = completePokemon;
+  }
+
+  private requestPokeAPI() {
     this.httpClient.get('https://pokeapi.co/api/v2/pokemon').toPromise()
       .then(this.assignResponse.bind(this));
   }
 
-  assignResponse(response: PokemonGeneral) {
+  private assignResponse(response: PokeAPIResult) {
     this.pokeApiResult = response;
   }
 
-  async createLoading(message: string) {
+  private async createLoading(message: string) {
     const loading = await this.loadingController.create({
       message
     });
 
     return await loading.present();
   }
-}
 
-interface PokemonGeneral {
-  count: number;
-  next: string;
-  previous: string;
-  results: SinglePokemon[];
-}
+  public filterHandler(pokeAPIPokemon: PokeAPIPokemon): boolean {
+    const {
+      name,
+      additionalInfo: {
+        id,
+        types
+      }
+    } = pokeAPIPokemon;
 
-interface SinglePokemon {
-  name: string;
-  url: string;
+    return stringIncludes(name, this.filterClause) 
+      || stringIncludes(id.toString(), this.filterClause)
+      || arrayIncludesString(types.map(e => e.type.name), this.filterClause);
+  }
+
+  private compareSimpleAndCompletePokemons(pokeAPIPokemon: PokeAPIPokemon, completePokemon: CompletePokemon): boolean {
+    return this.extractRefIdFromURL(pokeAPIPokemon.url) === completePokemon.id;
+  }
+
+  private extractRefIdFromURL(url: string): number {
+    const spittedUrl = url.split('/');
+
+    return Number(spittedUrl[spittedUrl.length - 2]);
+  }
 }

@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Pokemon } from '../../interfaces/Pokemon';
+import { CompletePokemon } from '../../interfaces/CompletePokemon';
 import colors from '../../resources/colors';
 
 @Component({
-  selector: 'pokemon-card',
+  selector: 'app-pokemon-card',
   templateUrl: 'pokemon-card.component.html',
   styleUrls: ['pokemon-card.component.scss'],
 })
@@ -13,38 +13,45 @@ export class PokemonCardComponent implements OnInit {
 
   @Input() public name: string;
   @Input() public url!: string;
+  @Output() pokemonFetchComplete: EventEmitter<CompletePokemon>;
 
   public pokemonRefId: number;
-  public pokemon: Pokemon;
+  public pokemon: CompletePokemon;
 
   public fetchCompleted = false;
-  public colors: object;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+    this.pokemonFetchComplete = new EventEmitter<CompletePokemon>();
+  }
 
-  ngOnInit(): void {
-    this.extractRefId();
+  public ngOnInit(): void {
+    this.extractRefIdFromPokemonUrl();
     this.startPokemonFetch();
   }
 
-  startPokemonFetch() {
-    this.httpClient.get(this.url).toPromise()
-      .then(this.assignPokemon.bind(this))
-      .then(this.finishPokemonFetch.bind(this));
+  private async startPokemonFetch() {
+    const response = await this.makeGetRequest(this.url) as CompletePokemon;
+    this.assignPokemonAndColor(response);
+    this.finishPokemonFetch();
   }
 
-  finishPokemonFetch() {
+  private finishPokemonFetch() {
     this.fetchCompleted = true;
+    this.pokemonFetchComplete.emit(this.pokemon);
   }
 
-  assignPokemon(pokemon: Pokemon) {
+  private makeGetRequest(url: string): Promise<any> {
+    return this.httpClient.get(url).toPromise();
+  }
+
+  private assignPokemonAndColor(pokemon: CompletePokemon) {
     this.pokemon = pokemon;
     this.pokemon.types.forEach(type => {
       type.type.color = `#${colors[type.type.name]}`;
     });
   }
 
-  extractRefId() {
+  private extractRefIdFromPokemonUrl() {
     const splittedUrl = this.url.split('/');
     this.pokemonRefId = Number(splittedUrl[splittedUrl.length - 2]);
   }

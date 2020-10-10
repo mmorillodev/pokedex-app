@@ -1,14 +1,14 @@
-export interface Pokemon {
+export interface CompletePokemon {
+    id: number;
     abilities: PokemonAbility[];
     sprites: Sprites;
     types: Type[];
 }
 
-interface PokemonAbility {
+// tslint:disable-next-line: no-empty-interface
+interface PokemonAbility { }
 
-}
-
-interface Sprites {
+export interface Sprites {
     back_default: string;
     back_female: string;
     back_shiny: string;
@@ -20,11 +20,11 @@ interface Sprites {
     other: object;
 }
 
-interface Type {
+export interface Type {
     type: TypeCompl;
 }
 
-interface TypeCompl {
+export interface TypeCompl {
     name: string;
     color: string;
 }
