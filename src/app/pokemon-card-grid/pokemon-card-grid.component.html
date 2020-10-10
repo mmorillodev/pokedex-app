@@ -1,3 +1,9 @@
 <div class="pokemon-grid" *ngIf="pokeApiResult !== undefined">
-  <pokemon-card *ngFor="let pokemon of (filterClause === undefined ? pokeApiResult.results : pokeApiResult.results.filter(filterHandler.bind(this)))" name="{{pokemon.name}}" url="{{pokemon.url}}" (pokemonFetchComplete)="onPokemonFetchComplete($event)"></pokemon-card>
+  <pokemon-card 
+    *ngFor="let pokemon of (filterClause === undefined ? pokeApiResult.results : pokeApiResult.results.filter(filterHandler.bind(this)))" 
+    name="{{pokemon.name}}" 
+    url="{{pokemon.url}}" 
+    (pokemonFetchComplete)="onPokemonFetchComplete($event)"
+  ></pokemon-card>
+  <span class="no-content">No content to display</span>
 </div>

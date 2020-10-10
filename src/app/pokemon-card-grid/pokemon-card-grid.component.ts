@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 
-import { PokeAPIResult, SimplePokemon } from '../../interfaces/PokeAPIResult';
-import { CompletePokemon } from '../../interfaces/CompletePokemon';
+import { PokeAPIResult, PokeAPIPokemon } from '../../interfaces/PokeAPIResult';
+import { CompletePokemon, Type } from '../../interfaces/CompletePokemon';
 
 @Component({
   selector: 'pokemon-card-grid',
@@ -23,17 +23,17 @@ export class PokemonCardGridComponent implements OnInit {
       .then(() => this.loadingController.dismiss());
   }
 
-  public onPokemonFetchComplete(pokemon: CompletePokemon) {
-    this.completeSinglePokemonInfo(pokemon);
+  public onPokemonFetchComplete(completePokemon: CompletePokemon) {
+    this.completeSinglePokemonInfo(completePokemon);
   }
 
-  private completeSinglePokemonInfo(pokemon: CompletePokemon): void {
+  private completeSinglePokemonInfo(completePokemon: CompletePokemon): void {
     const simplePokemonTarget = this.pokeApiResult.results.find(
-      (simplePokemon: SimplePokemon) =>
-        this.pokemonComparator(simplePokemon, pokemon)
+      (pokeAPIPokemon: PokeAPIPokemon) =>
+        this.compareSimpleAndCompletePokemons(pokeAPIPokemon, completePokemon)
     );
 
-    console.log(simplePokemonTarget);
+    simplePokemonTarget.additionalInfo = completePokemon;
   }
 
   private requestPokeAPI() {
@@ -53,15 +53,38 @@ export class PokemonCardGridComponent implements OnInit {
     return await loading.present();
   }
 
-  public filterHandler(pokemon: SimplePokemon) {
-    const normalizedPokeName = this.normalizeString(pokemon.name);
-    const normalizedFilter = this.normalizeString(this.filterClause);
+  public filterHandler(pokeAPIPokemon: PokeAPIPokemon): boolean {
+    const {
+      name,
+      additionalInfo: {
+        id,
+        types
+      }
+    } = pokeAPIPokemon;
 
-    return normalizedPokeName.includes(normalizedFilter);
+    const normalizedFilterClause = this.normalizeString(this.filterClause);
+    let validPokemon = false;
+
+    if (this.normalizeString(name).includes(normalizedFilterClause)) {
+      validPokemon = true;
+    }
+
+    if (this.normalizeString(id.toString()).includes(normalizedFilterClause)) {
+      validPokemon = true;
+    }
+
+    const typesFinder = (type: Type) => 
+      this.normalizeString(type.type.name).includes(normalizedFilterClause);
+
+    if (types.some(typesFinder)) {
+      validPokemon = true;
+    }
+
+    return validPokemon;
   }
 
-  private pokemonComparator(simplePokemon: SimplePokemon, pokemon: CompletePokemon): boolean {
-    return this.extractRefIdFromURL(simplePokemon.url) === pokemon.id;
+  private compareSimpleAndCompletePokemons(pokeAPIPokemon: PokeAPIPokemon, completePokemon: CompletePokemon): boolean {
+    return this.extractRefIdFromURL(pokeAPIPokemon.url) === completePokemon.id;
   }
 
   private normalizeString(value: string) {
@@ -69,8 +92,8 @@ export class PokemonCardGridComponent implements OnInit {
   }
 
   private extractRefIdFromURL(url: string): number {
-    const splittedUrl = url.split('/');
+    const spittedUrl = url.split('/');
 
-    return Number(splittedUrl[splittedUrl.length - 2]);
+    return Number(spittedUrl[spittedUrl.length - 2]);
   }
 }
