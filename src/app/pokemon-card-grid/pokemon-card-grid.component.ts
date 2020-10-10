@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 
 import { PokeAPIResult, PokeAPIPokemon } from '../../interfaces/PokeAPIResult';
-import { CompletePokemon, Type } from '../../interfaces/CompletePokemon';
+import { CompletePokemon } from '../../interfaces/CompletePokemon';
 
 import { arrayIncludesString, stringIncludes, normalizeString } from '../../utils/utils';
 
