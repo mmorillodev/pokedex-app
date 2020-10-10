@@ -3,31 +3,42 @@ import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 
 import { DEFAULT_POKE_API_URL } from '../../resources/strings';
+import { PokeAPIResult, PokeAPIPokemon } from '../../interfaces/PokeAPIResult';
+import { CompletePokemon } from '../../interfaces/CompletePokemon';
+
+import { arrayIncludesString, stringIncludes, normalizeString } from '../../utils/utils';
 
 @Component({
-  selector: 'pokemon-card-grid',
+  selector: 'app-pokemon-card-grid',
   templateUrl: 'pokemon-card-grid.component.html',
   styleUrls: ['pokemon-card-grid.component.scss'],
 })
 export class PokemonCardGridComponent implements OnInit {
 
-  public pokeApiResult: PokemonGeneral;
+  @Input() public filterClause: string;
+
+  public pokeApiResult: PokeAPIResult;
+  public loading = true;
 
   constructor(private httpClient: HttpClient, private loadingController: LoadingController) { }
 
-  public ngOnInit(): void {
-    this.createLoading('Fetching pokemon info...')
-      .then(this.requestPokeAPI.bind(this))
-      .then(() => this.loadingController.dismiss());
+  public async ngOnInit() {
+    await this.createLoading('Fetching pokemon info...');
+    this.requestPokeAPI();
+    this.dismissLoading();
   }
 
   public async requestPokeAPI() {
-    const response: PokemonGeneral = await this.makeRequest(DEFAULT_POKE_API_URL) as PokemonGeneral;
+    const response: PokeAPIResult = await this.makeRequest(DEFAULT_POKE_API_URL) as PokeAPIResult;
     this.assignResponse(response);
   }
 
+  private assignResponse(response: PokeAPIResult) {
+    this.pokeApiResult = response;
+  }
+
   public async fetchNextPokemonBatch(infinityScrollEvent) {
-    const response: PokemonGeneral = await this.makeRequest(this.pokeApiResult.next) as PokemonGeneral;
+    const response: PokeAPIResult = await this.makeRequest(this.pokeApiResult.next) as PokeAPIResult;
     this.appendPokemonAndSetNext(response);
     infinityScrollEvent.target.complete();
   }
@@ -36,11 +47,7 @@ export class PokemonCardGridComponent implements OnInit {
     return this.httpClient.get(url).toPromise();
   }
 
-  private assignResponse(response: PokemonGeneral) {
-    this.pokeApiResult = response;
-  }
-
-  private appendPokemonAndSetNext(response: PokemonGeneral) {
+  private appendPokemonAndSetNext(response: PokeAPIResult) {
     this.pokeApiResult.results = [
       ...this.pokeApiResult.results,
       ...response.results
@@ -48,23 +55,60 @@ export class PokemonCardGridComponent implements OnInit {
     this.pokeApiResult.next = response.next;
   }
 
-  async createLoading(message: string) {
+  public onPokemonFetchComplete(completePokemon: CompletePokemon) {
+    this.completeSinglePokemonInfo(completePokemon);
+  }
+
+  private completeSinglePokemonInfo(completePokemon: CompletePokemon): void {
+    const simplePokemonTarget = this.pokeApiResult.results.find(
+      (pokeAPIPokemon: PokeAPIPokemon) =>
+        this.compareSimpleAndCompletePokemons(pokeAPIPokemon, completePokemon)
+    );
+
+    simplePokemonTarget.additionalInfo = completePokemon;
+  }
+
+  private async createLoading(message: string) {
+
+    this.loading = true;
+
     const loading = await this.loadingController.create({
       message
     });
 
     return await loading.present();
   }
-}
 
-interface PokemonGeneral {
-  count: number;
-  next: string;
-  previous: string;
-  results: SinglePokemon[];
-}
+  private async dismissLoading() {
+    this.loading = false;
+    await this.loadingController.dismiss();
+  }
 
-interface SinglePokemon {
-  name: string;
-  url: string;
+  public filterHandler(pokeAPIPokemon: PokeAPIPokemon): boolean {
+    const {
+      name,
+      additionalInfo: {
+        id,
+        types
+      }
+    } = pokeAPIPokemon;
+
+    return stringIncludes(name, this.filterClause) 
+      || stringIncludes(id.toString(), this.filterClause)
+      || arrayIncludesString(types.map(e => e.type.name), this.filterClause);
+  }
+
+  private compareSimpleAndCompletePokemons(pokeAPIPokemon: PokeAPIPokemon, completePokemon: CompletePokemon): boolean {
+    return this.extractRefIdFromURL(pokeAPIPokemon.url) === completePokemon.id;
+  }
+
+  private extractRefIdFromURL(url: string): number {
+    const spittedUrl = url.split('/');
+
+    return Number(spittedUrl[spittedUrl.length - 2]);
+  }
+
+  public stringIsEmpty(value: string) {
+    return value === undefined || value === null || value <= ' ';
+  }
 }
