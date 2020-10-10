@@ -5,7 +5,7 @@ import { CompletePokemon } from '../../interfaces/CompletePokemon';
 import colors from '../../resources/colors';
 
 @Component({
-  selector: 'pokemon-card',
+  selector: 'app-pokemon-card',
   templateUrl: 'pokemon-card.component.html',
   styleUrls: ['pokemon-card.component.scss'],
 })

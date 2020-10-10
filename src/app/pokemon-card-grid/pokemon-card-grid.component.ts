@@ -8,7 +8,7 @@ import { CompletePokemon } from '../../interfaces/CompletePokemon';
 import { arrayIncludesString, stringIncludes, normalizeString } from '../../utils/utils';
 
 @Component({
-  selector: 'pokemon-card-grid',
+  selector: 'app-pokemon-card-grid',
   templateUrl: 'pokemon-card-grid.component.html',
   styleUrls: ['pokemon-card-grid.component.scss'],
 })
