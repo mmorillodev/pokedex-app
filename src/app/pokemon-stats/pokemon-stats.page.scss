@@ -1,0 +1,144 @@
+.background {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: 30%;
+    border-radius: 0px 0px 30px 30px;
+    background: #FFA34E;
+  
+    img {
+      width: 170px;
+      height: 170px;
+      object-fit: cover;
+    }
+  
+  }
+  
+  .pokemon-name {
+    font-size: 20px;
+    text-align: center;
+    padding: 0.4em;
+  
+    .pokemon-number {
+      background-color: #A02F40;
+      font-size: 11px;
+    }
+  }
+  
+  .pokemon-type {
+    text-align: center;
+  
+    ion-badge {
+      background-color: #C72424;
+      width: 25%;
+      border-radius: 7px;
+    }
+  }
+  
+  .pokemon-attributes {
+    display: flex;
+    padding-top: 1rem;
+    font-size: 20px;
+    justify-content: space-between;
+  
+  
+    .weight {
+      text-align: left;
+      padding-left: 50px;
+      margin: 0;
+  
+      .weight-span {
+        font-size: 12px;
+        color: #484848;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        padding-top: 3px;
+      }
+    }
+  
+    .height {
+      text-align: right;
+      padding-right: 50px;
+  
+      .height-span {
+        font-size: 12px;
+        color: #484848;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        padding-top: 3px;
+      }
+    }
+  }
+  
+  .base-status {
+    text-align: center;
+    padding-top: 1.5rem;
+  }
+  
+  
+  
+  .pokemon-HP {
+    display: inline;
+    font-size: 14px;
+    color: #484848;
+    font-weight: bold;
+    margin-right: 27px;
+  }
+  
+  .pokemon-ATK {
+    display: inline;
+    font-size: 14px;
+    color: #484848;
+    font-weight: bold;
+    margin-right: 19px;
+  }
+  
+  .pokemon-DEF {
+    display: inline;
+    font-size: 14px;
+    color: #484848;
+    font-weight: bold;
+    margin-right: 19px;
+  }
+  
+  .pokemon-SPD {
+    display: inline;
+    font-size: 14px;
+    color: #484848;
+    font-weight: bold;
+    margin-right: 18px;
+  }
+  
+  .pokemon-status__item {
+    justify-content: space-evenly;
+    width: 90%;
+    margin: 0 auto;
+  }
+  
+  .progress-bar__container {
+    margin-top: 10px;
+    display: inline-block;
+    width: 80%;
+    height: 15px;
+    background-color: #353535;
+    border-radius: 8px;
+  }
+  
+  .progress-bar__container .progress-bar__content {
+    width: var(--myvar);
+    height: 15px;
+    border-radius: 8px;
+    position: relative;
+  }
+  
+  .value {
+    font-size: 13px;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 8px;
+  }
