@@ -10,23 +10,37 @@ import { LoadingController } from '@ionic/angular';
 export class PokemonCardGridComponent implements OnInit {
 
   public pokeApiResult: PokemonGeneral;
-  private isLoading: boolean;
 
   constructor(private httpClient: HttpClient, private loadingController: LoadingController) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.createLoading('Fetching pokemon info...')
       .then(this.requestPokeAPI.bind(this))
       .then(() => this.loadingController.dismiss());
   }
 
-  requestPokeAPI() {
+  public requestPokeAPI() {
     this.httpClient.get('https://pokeapi.co/api/v2/pokemon').toPromise()
       .then(this.assignResponse.bind(this));
   }
 
-  assignResponse(response: PokemonGeneral) {
+  public async fetchNextPokemonBatch(event) {
+    await this.httpClient.get(this.pokeApiResult.next).toPromise()
+      .then(this.appendPokemon.bind(this));
+
+    event.target.complete();
+  }
+
+  private assignResponse(response: PokemonGeneral) {
     this.pokeApiResult = response;
+  }
+
+  private appendPokemon(response: PokemonGeneral) {
+    this.pokeApiResult.results = [
+      ...this.pokeApiResult.results,
+      ...response.results
+    ];
+    this.pokeApiResult.next = response.next;
   }
 
   async createLoading(message: string) {
