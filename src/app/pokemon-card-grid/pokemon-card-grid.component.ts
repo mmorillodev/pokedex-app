@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 
+import { DEFAULT_POKE_API_URL } from '../../resources/strings';
+
 @Component({
   selector: 'pokemon-card-grid',
   templateUrl: 'pokemon-card-grid.component.html',
@@ -19,23 +21,26 @@ export class PokemonCardGridComponent implements OnInit {
       .then(() => this.loadingController.dismiss());
   }
 
-  public requestPokeAPI() {
-    this.httpClient.get('https://pokeapi.co/api/v2/pokemon').toPromise()
-      .then(this.assignResponse.bind(this));
+  public async requestPokeAPI() {
+    const response: PokemonGeneral = await this.makeRequest(DEFAULT_POKE_API_URL) as PokemonGeneral;
+    this.assignResponse(response);
   }
 
-  public async fetchNextPokemonBatch(event) {
-    await this.httpClient.get(this.pokeApiResult.next).toPromise()
-      .then(this.appendPokemon.bind(this));
+  public async fetchNextPokemonBatch(infinityScrollEvent) {
+    const response: PokemonGeneral = await this.makeRequest(this.pokeApiResult.next) as PokemonGeneral;
+    this.appendPokemonAndSetNext(response);
+    infinityScrollEvent.target.complete();
+  }
 
-    event.target.complete();
+  private makeRequest(url: string): Promise<any> {
+    return this.httpClient.get(url).toPromise();
   }
 
   private assignResponse(response: PokemonGeneral) {
     this.pokeApiResult = response;
   }
 
-  private appendPokemon(response: PokemonGeneral) {
+  private appendPokemonAndSetNext(response: PokemonGeneral) {
     this.pokeApiResult.results = [
       ...this.pokeApiResult.results,
       ...response.results
