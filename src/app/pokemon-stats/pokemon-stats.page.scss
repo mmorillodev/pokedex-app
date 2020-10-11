@@ -47,16 +47,17 @@ ion-toolbar {
 .pokemon-type {
   text-align: center;
   border-radius: 1.25rem;
-  padding: 0 .4em;
+  padding: 0 1.5em;
+  text-transform: capitalize;
 
   &:not(:last-child) {
-    margin-right: 5px;
+    margin-right: 10px;
   }
 }
 
 .pokemon-attributes {
   display: flex;
-  padding-top: 1rem;
+  padding-top: 1.5rem;
   font-size: 20px;
   justify-content: space-between;
 
@@ -100,39 +101,56 @@ ion-toolbar {
 
 .pokemon-HP {
   display: inline;
-  font-size: 14px;
-  color: #484848;
+  font-size: 12px;
+  color: #686669;
   font-weight: bold;
-  margin-right: 27px;
+  margin-right: 32px;
 }
 
 .pokemon-ATK {
   display: inline;
-  font-size: 14px;
-  color: #484848;
+  font-size: 12px;
+  color: #686669;
   font-weight: bold;
-  margin-right: 19px;
+  margin-right: 25px;
 }
 
 .pokemon-DEF {
   display: inline;
-  font-size: 14px;
-  color: #484848;
+  font-size: 12px;
+  color: #686669;
   font-weight: bold;
-  margin-right: 19px;
+  margin-right: 25px;
 }
 
 .pokemon-SPD {
   display: inline;
-  font-size: 14px;
-  color: #484848;
+  font-size: 12px;
+  color: #686669;
   font-weight: bold;
-  margin-right: 18px;
+  margin-right: 25px;
+}
+
+.pokemon-SP_A {
+  display: inline;
+  font-size: 12px;
+  color: #686669;
+  font-weight: bold;
+  margin-right: 19px;
+}
+
+.pokemon-SP_D {
+  display: inline;
+  font-size: 12px;
+  color: #686669;
+  font-weight: bold;
+  margin-right: 19px;
 }
 
 .pokemon-status__item {
+  padding-top: .5rem;
   justify-content: space-evenly;
-  width: 90%;
+  width: 80%;
   margin: 0 auto;
 }
 
@@ -146,7 +164,7 @@ ion-toolbar {
 }
 
 .progress-bar__container .progress-bar__content {
-  width: var(--myvar);
+  width: 65%;
   height: 15px;
   border-radius: 8px;
   position: relative;
