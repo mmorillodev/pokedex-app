@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router, NavigationExtras } from '@angular/router';
 
 import { CompletePokemon } from '../../interfaces/CompletePokemon';
 import colors from '../../resources/colors';
@@ -17,11 +18,36 @@ export class PokemonCardComponent implements OnInit {
 
   public pokemonRefId: number;
   public pokemon: CompletePokemon;
-
   public fetchCompleted = false;
+  private valueToSend;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private router: Router, private httpClient: HttpClient) {
     this.pokemonFetchComplete = new EventEmitter<CompletePokemon>();
+  }
+
+  sendInfoByState() {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        valueToSend: this.value()
+      }
+    };
+    this.router.navigate(['/pokemon'], navigationExtras);
+  }
+
+  value() {
+    return this.valueToSend = {
+      name: this.name,
+      pokemon_img: this.pokemon.sprites.other['official-artwork'].front_default,
+      pokemon_id: this.pokemon.id,
+      type: this.pokemon.types,
+      weight: this.pokemon.weight,
+      height: this.pokemon.height,
+      stats: this.pokemon.stats
+    };
+  }
+
+  public toString(){
+    console.log()
   }
 
   public ngOnInit(): void {
