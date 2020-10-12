@@ -1,11 +1,13 @@
 <ion-toolbar>
   <ion-buttons slot="start">
-    <ion-back-button defaultHref="home" color="dark"></ion-back-button>
+    <ion-back-button defaultHref="home" color="secondary" text="">
+    </ion-back-button>
   </ion-buttons>
 </ion-toolbar>
+
 <ion-content [fullscreen]="true">
   <div class="background">
-    <img src= "{{data['pokemon_img']}}">
+    <img src="{{data['pokemon_img']}}">
   </div>
 
   <div class="pokemon-name">
@@ -25,12 +27,12 @@
 
   <div class="pokemon-attributes">
     <div class="weight">
-      <span> {{data['weight']}} kg</span>
+      <span> {{formatAtributes(data['weight'].toString())}} kg</span>
       <br>
       <span class="weight-span">Weight</span>
     </div>
     <div class="height">
-      <span> {{data['height']}} m</span>
+      <span> {{formatAtributes(data['height'].toString())}} m</span>
       <br>
       <span class="height-span">Height</span>
     </div>
@@ -71,12 +73,14 @@
         <ion-text class="value"> {{getStats(5)}} </ion-text>
       </div>
     </div>
+    <br>
     <span class="pokemon-SP_A">SP_A</span>
     <div class="progress-bar__container">
       <div class="progress-bar__content" style="background-color: #2F80ED; width: var(--SP_A)">
         <ion-text class="value"> {{getStats(3)}} </ion-text>
       </div>
     </div>
+    <br>
     <span class="pokemon-SP_D">SP_D</span>
     <div class="progress-bar__container">
       <div class="progress-bar__content" style="background-color: #2F80ED; width: var(--SP_D)">

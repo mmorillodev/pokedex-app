@@ -27,6 +27,7 @@ ion-toolbar {
   font-size: 20px;
   text-align: center;
   padding: 0.4em;
+  text-transform: capitalize;
 
   .pokemon-number {
     background-color: #A02F40;
@@ -171,7 +172,7 @@ ion-toolbar {
 }
 
 .value {
-  font-size: 13px;
+  font-size: 11px;
   display: flex;
   justify-content: flex-end;
   margin-right: 8px;

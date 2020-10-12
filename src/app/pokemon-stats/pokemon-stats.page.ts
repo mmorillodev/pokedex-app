@@ -60,16 +60,25 @@ export class PokemonStatsPage implements OnInit {
     return sum;
   }
 
-  private maiorValor(array = []) {
-    return array.sort(function(a, b){return b - a;})[array.length -1];
+  private maiorValor(array = [], index: number) {
+    return array.sort(function (a, b) { return b - a; })[index];
   }
 
   private getWidght(value: number) {
-    let sum = this.totalStats()
+    let sum = (this.maiorValor(this.getStatsToArray(), 0) + 20)
     value *= 100;
     let percentual = value / sum;
-    console.log(percentual)
     return percentual;
+  }
+
+  public formatAtributes(atribute: string) {
+    if (atribute.length == 1) {
+      atribute = "0," + atribute;
+      return atribute;
+    } else if (atribute.length > 1) {
+        atribute = atribute.substr(0, (atribute.length - 1))+ "," + atribute.substr((atribute.length -1));
+        return atribute;
+    }
   }
 
   ngOnInit() {
@@ -80,6 +89,6 @@ export class PokemonStatsPage implements OnInit {
     this.setStyle('--SPD', this.getWidght(this.getStats(5)).toString() + '%')
     this.setStyle('--SP_A', this.getWidght(this.getStats(3)).toString() + '%')
     this.setStyle('--SP_D', this.getWidght(this.getStats(4)).toString() + '%')
-    console.log(this.maiorValor(this.getStatsToArray()))
+    console.log(this.formatAtributes('440'))
   }
 }
