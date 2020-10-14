@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 
-import { DEFAULT_POKE_API_URL } from '../../resources/strings';
+import { BASE_POKE_API_URL } from '../../resources/strings';
 import { PokeAPIResult, PokeAPIPokemon } from '../../interfaces/PokeAPIResult';
 import { CompletePokemon } from '../../interfaces/CompletePokemon';
 
@@ -30,7 +30,7 @@ export class PokemonCardGridComponent implements OnInit {
   }
 
   public async requestPokeAPI() {
-    const response: PokeAPIResult = await this.makeRequest(DEFAULT_POKE_API_URL) as PokeAPIResult;    
+    const response: PokeAPIResult = await this.makeRequest(`${BASE_POKE_API_URL}/pokemon?limit=1050&offset=0`) as PokeAPIResult;    
     this.assignResponse(response);
   }
 
