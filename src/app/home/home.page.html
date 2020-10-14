@@ -1,7 +1,7 @@
 <ion-content [fullscreen]="true">
   <ion-row class="header">
     <ion-col>
-      <ion-searchbar class="pis0 search" (search)="assignFilterClause($event)"></ion-searchbar>
+      <ion-searchbar class="pis0 search" (search)="assignFilterClause($event)" (ionCancel)="assignFilterClause($event)"></ion-searchbar>
     </ion-col>
   </ion-row>
   <div id="container">
