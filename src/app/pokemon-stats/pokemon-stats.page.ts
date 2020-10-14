@@ -9,53 +9,50 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PokemonStatsPage implements OnInit {
 
-  data: any;
+  public pokemon: any;
+  public pokemonStatus: number[] = []
+  private highestStatus: number
 
   constructor(private elementRef: ElementRef, private route: ActivatedRoute, private router: Router) {
     this.route.queryParams.subscribe(params => {
       let getNav = this.router.getCurrentNavigation();
       if (getNav.extras.state) {
-        this.data = getNav.extras.state.valueToSend;
+        this.pokemon = getNav.extras.state.valueToSend;
       }
     });
   }
 
-  getStats(index: number) {
-    let status = this.data.stats.map(function (value) {
-      return value.base_stat
-    });
-    return status[index];
-  }
-
-  getStatsToArray() {
-    let array = this.data.stats.map(function (status) {
+  private getStatsToArray() {
+    let array = this.pokemon.stats.map(function (status) {
       return status.base_stat
     });
-    return array
+    this.pokemonStatus = array
   }
 
-  private maiorValor(array = []) {
-    return array.sort(function (a, b) { return b - a; })[0];
+  private highestStatusInArray() {
+    this.highestStatus = this.pokemonStatus.map((x) => x).sort(function (a, b) { return b - a; })[0];
   }
 
-  private getWidght(value: number) {
-    let sum = (this.maiorValor(this.getStatsToArray()) + 20)
-    value *= 100;
-    let percentual = value / sum;
+  public getWidghtInPercentual(pokemonStatus: number) {
+    let newHighestStatus = this.highestStatus + 20
+    pokemonStatus *= 100;
+    let percentual = (pokemonStatus / newHighestStatus).toString() + "%";
     return percentual;
   }
 
-  public formatAtributes(atribute: string) {
+  public formatPokemonAtributes(atribute: string) {
     if (atribute.length == 1) {
       atribute = "0," + atribute;
       return atribute;
-    } else if (atribute.length > 1) {
+    } else {
       atribute = atribute.substr(0, (atribute.length - 1)) + "," + atribute.substr((atribute.length - 1));
       return atribute;
     }
   }
 
   ngOnInit() {
+    this.getStatsToArray()
+    this.highestStatusInArray()
   }
 }
 
