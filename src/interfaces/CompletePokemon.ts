@@ -3,6 +3,9 @@ export interface CompletePokemon {
     abilities: PokemonAbility[];
     sprites: Sprites;
     types: Type[];
+    weight: number;
+    height: number;
+    stats: Stats[]
 }
 
 // tslint:disable-next-line: no-empty-interface
@@ -28,3 +31,5 @@ export interface TypeCompl {
     name: string;
     color: string;
 }
+
+export interface Stats { }
