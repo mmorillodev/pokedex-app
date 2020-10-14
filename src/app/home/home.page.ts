@@ -12,7 +12,7 @@ export class HomePage {
 
   constructor() {}
 
-  assignFilter({ target }) {
+  assignSearchValue({ target }) {
     this.searchValue = target.value;
   }
 }
