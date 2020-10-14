@@ -6,8 +6,6 @@ import { DEFAULT_POKE_API_URL, BASE_POKE_API_URL } from '../../resources/strings
 import { PokeAPIResult, PokeAPIPokemon } from '../../interfaces/PokeAPIResult';
 import { CompletePokemon } from '../../interfaces/CompletePokemonResult';
 
-import { arrayIncludesString, stringIncludes, normalizeString } from '../../utils/utils';
-
 @Component({
   selector: 'app-pokemon-card-grid',
   templateUrl: 'pokemon-card-grid.component.html',
@@ -89,8 +87,7 @@ export class PokemonCardGridComponent implements OnInit {
     await this.loadingController.dismiss();
   }
 
-  public async tryFilterRequestOtherwise() {
-
+  public async asyncFilterOrRequest() {
     await this.createLoading('Fetching pokemon info...');
 
     const filterTypeHandlers = {
@@ -100,18 +97,18 @@ export class PokemonCardGridComponent implements OnInit {
       })
     };
 
-    const filtered = this.pokeApiResult.results.filter((pokeApiPokemon: PokeAPIPokemon) => {
+    const found = this.pokeApiResult.results.find((pokeApiPokemon: PokeAPIPokemon) => {
       const filterHandler = filterTypeHandlers[this.filterType];
 
       return filterHandler ? filterHandler(pokeApiPokemon) : false;
     });
 
-    if (filtered.length <= 0) {
+    if (found) {
       return this.getSearched();
     }
 
     await this.dismissLoading();
-    return filtered;
+    return found;
   }
 
   public async getSearched() {
@@ -146,7 +143,7 @@ export class PokemonCardGridComponent implements OnInit {
       }];
     }
 
-    return [];
+    return returnValue;
   }
 
   private isTypeRequest(response): boolean {
