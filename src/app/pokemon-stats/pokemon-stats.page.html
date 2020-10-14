@@ -1,92 +1,92 @@
-<ion-toolbar>
-  <ion-buttons slot="start">
-    <ion-back-button defaultHref="home" color="secondary" text="">
-    </ion-back-button>
-  </ion-buttons>
-</ion-toolbar>
+  <ion-toolbar [ngStyle]="{'background': data.type[0].type.color}">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home" color="secondary" text="">
+      </ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
 
-<ion-content [fullscreen]="true">
-  <div class="background">
-    <img src="{{data['pokemon_img']}}">
-  </div>
+  <ion-content [fullscreen]="true">
+    <div class="background" [ngStyle]="{'background': data.type[0].type.color}">
+      <img src="{{data.pokemon_img}}">
+    </div>
 
-  <div class="pokemon-name">
-    <ion-row>
-      <ion-col>
-        <ion-text> {{data['name']}} </ion-text>
-        <ion-badge class="pokemon-number" color="primary"> {{data['pokemon_id']}} </ion-badge>
-      </ion-col>
-    </ion-row>
-  </div>
+    <div class="pokemon-name">
+      <ion-row>
+        <ion-col>
+          <ion-text> {{data.name}} </ion-text>
+          <ion-badge class="pokemon-number" color="primary"> {{data.pokemon_id}} </ion-badge>
+        </ion-col>
+      </ion-row>
+    </div>
 
-  <div class="pokemon-type">
-    <span class="pokemon-type" *ngFor="let type of data['type']" [ngStyle]="{'background': type.type.color}">
-      {{type.type.name}}
-    </span>
-  </div>
+    <div class="pokemon-type">
+      <span class="pokemon-type" *ngFor="let type of data.type" [ngStyle]="{'background': type.type.color}">
+        {{type.type.name}}
+      </span>
+    </div>
 
-  <div class="pokemon-attributes">
-    <div class="weight">
-      <span> {{formatAtributes(data['weight'].toString())}} kg</span>
+    <div class="pokemon-attributes">
+      <div class="weight">
+        <span> {{formatAtributes(data.weight.toString())}} kg</span>
+        <br>
+        <span class="weight-span">Weight</span>
+      </div>
+      <div class="height">
+        <span> {{formatAtributes(data.height.toString())}} m</span>
+        <br>
+        <span class="height-span">Height</span>
+      </div>
+    </div>
+
+    <div class="base-status">
+      <ion-text>
+        Base Status
+      </ion-text>
+    </div>
+
+
+    <div class="pokemon-status__item">
+      <span class="pokemon-HP">HP</span>
+      <div class="progress-bar__container">
+        <div class="progress-bar__content" style="background-color: #C72424;" [ngStyle]="{'width': getWidght(getStats(0)).toString() + '%'}">
+          <ion-text class="value"> {{getStats(0)}} </ion-text>
+        </div>
+      </div>
       <br>
-      <span class="weight-span">Weight</span>
-    </div>
-    <div class="height">
-      <span> {{formatAtributes(data['height'].toString())}} m</span>
+      <span class="pokemon-ATK">ATK</span>
+      <div class="progress-bar__container">
+        <div class="progress-bar__content" style="background-color: #EB5757; " [ngStyle]="{'width': getWidght(getStats(1)).toString() + '%'}">
+          <ion-text class="value"> {{getStats(1)}} </ion-text>
+        </div>
+      </div>
       <br>
-      <span class="height-span">Height</span>
+      <span class="pokemon-DEF">DEF</span>
+      <div class="progress-bar__container">
+        <div class="progress-bar__content" style="background-color: #A590EF;" [ngStyle]="{'width': getWidght(getStats(2)).toString() + '%'}">
+          <ion-text class="value"> {{getStats(2)}} </ion-text>
+        </div>
+      </div>
+      <br>
+      <span class="pokemon-SPD">SPD</span>
+      <div class="progress-bar__container">
+        <div class="progress-bar__content" style="background-color: #2F80ED;" [ngStyle]="{'width': getWidght(getStats(5)).toString() + '%'}">
+          <ion-text class="value"> {{getStats(5)}} </ion-text>
+        </div>
+      </div>
+      <br>
+      <span class="pokemon-SP_A">SP_A</span>
+      <div class="progress-bar__container">
+        <div class="progress-bar__content" style="background-color: #A52FED;" [ngStyle]="{'width': getWidght(getStats(3)).toString() + '%'}">
+          <ion-text class="value"> {{getStats(3)}} </ion-text>
+        </div>
+      </div>
+      <br>
+      <span class="pokemon-SP_D">SP_D</span>
+      <div class="progress-bar__container">
+        <div class="progress-bar__content" style="background-color: #34C096;" [ngStyle]="{'width': getWidght(getStats(4)).toString() + '%'}">
+          <ion-text class="value"> {{getStats(4)}} </ion-text>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="base-status">
-    <ion-text>
-      Base Status
-    </ion-text>
-  </div>
-
-
-  <div class="pokemon-status__item">
-    <span class="pokemon-HP">HP</span>
-    <div class="progress-bar__container">
-      <div class="progress-bar__content" style="background-color:#C72424; width: var(--HP);">
-        <ion-text class="value"> {{getStats(0)}} </ion-text>
-      </div>
-    </div>
-    <br>
-    <span class="pokemon-ATK">ATK</span>
-    <div class="progress-bar__container">
-      <div class="progress-bar__content" style="background-color: #EB5757; width: var(--ATK)">
-        <ion-text class="value"> {{getStats(1)}} </ion-text>
-      </div>
-    </div>
-    <br>
-    <span class="pokemon-DEF">DEF</span>
-    <div class="progress-bar__container">
-      <div class="progress-bar__content" style="background-color: #A590EF; width: var(--DEF)">
-        <ion-text class="value"> {{getStats(2)}} </ion-text>
-      </div>
-    </div>
-    <br>
-    <span class="pokemon-SPD">SPD</span>
-    <div class="progress-bar__container">
-      <div class="progress-bar__content" style="background-color: #2F80ED; width: var(--SPD)">
-        <ion-text class="value"> {{getStats(5)}} </ion-text>
-      </div>
-    </div>
-    <br>
-    <span class="pokemon-SP_A">SP_A</span>
-    <div class="progress-bar__container">
-      <div class="progress-bar__content" style="background-color: #2F80ED; width: var(--SP_A)">
-        <ion-text class="value"> {{getStats(3)}} </ion-text>
-      </div>
-    </div>
-    <br>
-    <span class="pokemon-SP_D">SP_D</span>
-    <div class="progress-bar__container">
-      <div class="progress-bar__content" style="background-color: #2F80ED; width: var(--SP_D)">
-        <ion-text class="value"> {{getStats(4)}} </ion-text>
-      </div>
-    </div>
-  </div>
-
-</ion-content>
+  </ion-content>

@@ -1,6 +1,6 @@
 ion-toolbar {
   --border-width: 0;
-  --background: var(--my-var);
+  --background: var(--backgroundHeader);
 
 }
 
@@ -13,7 +13,6 @@ ion-toolbar {
   width: 100%;
   height: 30%;
   border-radius: 0px 0px 30px 30px;
-  background: var(--my-var);
 
   img {
     width: 170px;
@@ -37,18 +36,10 @@ ion-toolbar {
 
 .pokemon-type {
   text-align: center;
-
-  ion-badge {
-    background-color: #C72424;
-    width: 25%;
-    border-radius: 7px;
-  }
-}
-
-.pokemon-type {
-  text-align: center;
   border-radius: 1.25rem;
   padding: 0 1.5em;
+  padding-top: 3px;
+  padding-bottom: 3px;
   text-transform: capitalize;
 
   &:not(:last-child) {
@@ -60,12 +51,11 @@ ion-toolbar {
   display: flex;
   padding-top: 1.5rem;
   font-size: 20px;
-  justify-content: space-between;
+  justify-content: space-evenly;
 
 
   .weight {
     text-align: left;
-    padding-left: 50px;
     margin: 0;
 
     .weight-span {
@@ -80,7 +70,6 @@ ion-toolbar {
 
   .height {
     text-align: right;
-    padding-right: 50px;
 
     .height-span {
       font-size: 12px;
@@ -165,7 +154,6 @@ ion-toolbar {
 }
 
 .progress-bar__container .progress-bar__content {
-  width: 65%;
   height: 15px;
   border-radius: 8px;
   position: relative;
