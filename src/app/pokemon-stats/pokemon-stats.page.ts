@@ -12,20 +12,12 @@ export class PokemonStatsPage implements OnInit {
   data: any;
 
   constructor(private elementRef: ElementRef, private route: ActivatedRoute, private router: Router) {
-    try {
-      this.route.queryParams.subscribe(params => {
-        let getNav = this.router.getCurrentNavigation();
-        if (getNav.extras.state) {
-          this.data = getNav.extras.state.valueToSend;
-        }
-      });
-    } catch (error) {
-      this.router.navigate(['/home']);
-    }
-  }
-
-  setStyle(variable: string, value: string): void {
-    this.elementRef.nativeElement.style.setProperty(variable, value);
+    this.route.queryParams.subscribe(params => {
+      let getNav = this.router.getCurrentNavigation();
+      if (getNav.extras.state) {
+        this.data = getNav.extras.state.valueToSend;
+      }
+    });
   }
 
   getStats(index: number) {
@@ -63,12 +55,8 @@ export class PokemonStatsPage implements OnInit {
     }
   }
 
-  public backToHome() {
-    if (this.data.name = null) {
-      console.log('teste')
-    }
-  }
-
   ngOnInit() {
   }
 }
+
+
