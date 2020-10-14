@@ -17,6 +17,7 @@ export class PokemonCardGridComponent implements OnInit {
 
   @Input() public filterClause: string;
 
+  public limit = 20;
   public pokeApiResult: PokeAPIResult;
   public loading = true;
 
@@ -29,7 +30,7 @@ export class PokemonCardGridComponent implements OnInit {
   }
 
   public async requestPokeAPI() {
-    const response: PokeAPIResult = await this.makeRequest(DEFAULT_POKE_API_URL) as PokeAPIResult;
+    const response: PokeAPIResult = await this.makeRequest(DEFAULT_POKE_API_URL) as PokeAPIResult;    
     this.assignResponse(response);
   }
 
@@ -38,21 +39,12 @@ export class PokemonCardGridComponent implements OnInit {
   }
 
   public async fetchNextPokemonBatch(infinityScrollEvent) {
-    const response: PokeAPIResult = await this.makeRequest(this.pokeApiResult.next) as PokeAPIResult;
-    this.appendPokemonAndSetNext(response);
+    this.limit += 20;
     infinityScrollEvent.target.complete();
   }
 
   private makeRequest(url: string): Promise<any> {
     return this.httpClient.get(url).toPromise();
-  }
-
-  private appendPokemonAndSetNext(response: PokeAPIResult) {
-    this.pokeApiResult.results = [
-      ...this.pokeApiResult.results,
-      ...response.results
-    ];
-    this.pokeApiResult.next = response.next;
   }
 
   public onPokemonFetchComplete(completePokemon: CompletePokemon) {
@@ -85,17 +77,9 @@ export class PokemonCardGridComponent implements OnInit {
   }
 
   public filterHandler(pokeAPIPokemon: PokeAPIPokemon): boolean {
-    const {
-      name,
-      additionalInfo: {
-        id,
-        types
-      }
-    } = pokeAPIPokemon;
+    const { name } = pokeAPIPokemon;
 
-    return stringIncludes(name, this.filterClause) 
-      || stringIncludes(id.toString(), this.filterClause)
-      || arrayIncludesString(types.map(e => e.type.name), this.filterClause);
+    return stringIncludes(name, this.filterClause);
   }
 
   private compareSimpleAndCompletePokemons(pokeAPIPokemon: PokeAPIPokemon, completePokemon: CompletePokemon): boolean {
