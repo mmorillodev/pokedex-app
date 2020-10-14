@@ -1,14 +1,7 @@
 <ion-content [fullscreen]="true">
   <ion-row class="header">
     <ion-col>
-      <ion-searchbar class="pis0 search" (ionChange)="applySearch($event)"></ion-searchbar>
-    </ion-col>
-    <ion-col>
-      <ion-select value="pokemon" okText="Ok" cancelText="Cancel" class="select">
-        <ion-select-option value="pokemon">Pokemon</ion-select-option>
-        <ion-select-option value="berry">Berry</ion-select-option>
-        <ion-select-option value="generation">Generation</ion-select-option>
-      </ion-select>
+      <ion-searchbar class="pis0 search" (search)="assignFilterClause($event)" (ionCancel)="assignFilterClause($event)"></ion-searchbar>
     </ion-col>
   </ion-row>
   <div id="container">

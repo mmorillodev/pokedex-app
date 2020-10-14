@@ -11,7 +11,7 @@ export class HomePage {
 
   constructor() {}
 
-  applySearch({target: { value }}) {
+  assignFilterClause({target: { value }}) {
     this.searchValue = value;
   }
 }

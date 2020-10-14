@@ -13,11 +13,11 @@ export const extractFromArrayPath = (source: object, pathArray: string[]): any =
 };
 
 export const arrayIncludesString = (source: string[], target: string): boolean => {
-    return source.some(e => stringIncludes(e, target));
+    return source?.some(e => stringIncludes(e, target));
 };
 
 export const stringIncludes = (source: string, target: string): boolean => {
-    return normalizeString(source).includes(normalizeString(target));
+    return normalizeString(source)?.includes(normalizeString(target));
 };
 
 export const normalizeString = (value: string): string => {
