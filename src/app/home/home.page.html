@@ -3,13 +3,6 @@
     <ion-col>
       <ion-searchbar class="pis0 search" (search)="assignFilterClause($event)"></ion-searchbar>
     </ion-col>
-    <ion-col>
-      <ion-select value="pokemon" okText="Ok" cancelText="Cancel" class="select">
-        <ion-select-option value="pokemon">Pokemon</ion-select-option>
-        <ion-select-option value="berry">Berry</ion-select-option>
-        <ion-select-option value="generation">Generation</ion-select-option>
-      </ion-select>
-    </ion-col>
   </ion-row>
   <div id="container">
     <app-pokemon-card-grid [filterClause]="searchValue"></app-pokemon-card-grid>
