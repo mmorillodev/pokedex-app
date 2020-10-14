@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { CompletePokemon } from '../../interfaces/CompletePokemon';
+import { CompletePokemon, Type } from '../../interfaces/CompletePokemonResult';
 import colors from '../../resources/colors';
 
 @Component({
@@ -13,6 +13,8 @@ export class PokemonCardComponent implements OnInit {
 
   @Input() public name: string;
   @Input() public url!: string;
+  @Input() public imageUrl: string;
+  @Input() public types: Type[];
   @Output() pokemonFetchComplete: EventEmitter<CompletePokemon>;
 
   public pokemonRefId: number;
@@ -41,6 +43,10 @@ export class PokemonCardComponent implements OnInit {
   }
 
   private makeGetRequest(url: string): Promise<any> {
+    if (!url) {
+      throw new Error('NoSuchUrl');
+    }
+
     return this.httpClient.get(url).toPromise();
   }
 

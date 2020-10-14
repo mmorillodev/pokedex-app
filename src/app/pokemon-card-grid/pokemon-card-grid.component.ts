@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, AlertController } from '@ionic/angular';
 
-import { DEFAULT_POKE_API_URL } from '../../resources/strings';
+import { DEFAULT_POKE_API_URL, BASE_POKE_API_URL } from '../../resources/strings';
 import { PokeAPIResult, PokeAPIPokemon } from '../../interfaces/PokeAPIResult';
-import { CompletePokemon } from '../../interfaces/CompletePokemon';
+import { CompletePokemon } from '../../interfaces/CompletePokemonResult';
 
 import { arrayIncludesString, stringIncludes, normalizeString } from '../../utils/utils';
 
@@ -16,15 +16,17 @@ import { arrayIncludesString, stringIncludes, normalizeString } from '../../util
 export class PokemonCardGridComponent implements OnInit {
 
   @Input() public filterClause: string;
+  @Input() public filterType: string;
 
   public pokeApiResult: PokeAPIResult;
+
   public loading = true;
 
-  constructor(private httpClient: HttpClient, private loadingController: LoadingController) { }
+  constructor(private httpClient: HttpClient, private loadingController: LoadingController, private alertController: AlertController) { }
 
   public async ngOnInit() {
     await this.createLoading('Fetching pokemon info...');
-    this.requestPokeAPI();
+    await this.requestPokeAPI();
     this.dismissLoading();
   }
 
@@ -38,8 +40,11 @@ export class PokemonCardGridComponent implements OnInit {
   }
 
   public async fetchNextPokemonBatch(infinityScrollEvent) {
-    const response: PokeAPIResult = await this.makeRequest(this.pokeApiResult.next) as PokeAPIResult;
-    this.appendPokemonAndSetNext(response);
+    if (!this.filterClause && this.pokeApiResult.next) {
+      const response: PokeAPIResult = await this.makeRequest(this.pokeApiResult.next) as PokeAPIResult;
+      this.appendPokemonAndSetNext(response);
+    }
+
     infinityScrollEvent.target.complete();
   }
 
@@ -84,18 +89,79 @@ export class PokemonCardGridComponent implements OnInit {
     await this.loadingController.dismiss();
   }
 
-  public filterHandler(pokeAPIPokemon: PokeAPIPokemon): boolean {
-    const {
-      name,
-      additionalInfo: {
-        id,
-        types
-      }
-    } = pokeAPIPokemon;
+  public async tryFilterRequestOtherwise() {
 
-    return stringIncludes(name, this.filterClause) 
-      || stringIncludes(id.toString(), this.filterClause)
-      || arrayIncludesString(types.map(e => e.type.name), this.filterClause);
+    await this.createLoading('Fetching pokemon info...');
+
+    const filterTypeHandlers = {
+      'pokemon': ((pokeApiPokemon: PokeAPIPokemon) => {
+        return pokeApiPokemon.name === this.filterClause
+          || pokeApiPokemon.additionalInfo.id.toString() === this.filterClause;
+      })
+    };
+
+    const filtered = this.pokeApiResult.results.filter((pokeApiPokemon: PokeAPIPokemon) => {
+      const filterHandler = filterTypeHandlers[this.filterType];
+
+      return filterHandler ? filterHandler(pokeApiPokemon) : false;
+    });
+
+    if (filtered.length <= 0) {
+      return this.getSearched();
+    }
+
+    await this.dismissLoading();
+    return filtered;
+  }
+
+  public async getSearched() {
+    let returnStatement = [];
+    try {
+      returnStatement = await this.requestAndGetResponse();
+    } catch (e) {
+      this.showAlert({
+        header: 'Erro',
+        subHeader: 'dps arrumo saporra kkkk'
+      });
+    }
+
+    return returnStatement;
+  }
+
+  private async requestAndGetResponse() {
+    const targetURL = `${BASE_POKE_API_URL}/${this.filterType}/${this.filterClause}`;
+    const response = await this.makeRequest(targetURL);
+
+    let returnValue = [];
+    if (this.isTypeRequest(response)) {
+      returnValue = response.pokemon.map(singlePokemonTypeResponse => ({
+        name: singlePokemonTypeResponse.pokemon.name,
+        url: singlePokemonTypeResponse.pokemon.url,
+      }), {});
+    }
+    else {
+      returnValue = [{
+        name: response.name,
+        url: targetURL
+      }];
+    }
+
+    return [];
+  }
+
+  private isTypeRequest(response): boolean {
+    return response.pokemon;
+  }
+
+  private async showAlert({header, subHeader, message}: Alert) {
+    await (
+      await this.alertController.create({
+        cssClass: "pokemon-grid__alert",
+        header,
+        subHeader,
+        message
+      })
+    ).present();
   }
 
   private compareSimpleAndCompletePokemons(pokeAPIPokemon: PokeAPIPokemon, completePokemon: CompletePokemon): boolean {
@@ -111,4 +177,11 @@ export class PokemonCardGridComponent implements OnInit {
   public stringIsEmpty(value: string) {
     return value === undefined || value === null || value <= ' ';
   }
+}
+
+interface Alert {
+  header: string;
+  subHeader?: string;
+  message?: string;
+  cssClass?: string;
 }

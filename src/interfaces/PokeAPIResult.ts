@@ -1,4 +1,4 @@
-import { CompletePokemon } from "./CompletePokemon";
+import { CompletePokemon } from "./CompletePokemonResult";
 
 export interface PokeAPIResult {
     count: number;

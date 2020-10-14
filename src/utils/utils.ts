@@ -13,7 +13,7 @@ export const extractFromArrayPath = (source: object, pathArray: string[]): any =
 };
 
 export const arrayIncludesString = (source: string[], target: string): boolean => {
-    return source.some(e => stringIncludes(e, target));
+    return source?.some(e => stringIncludes(e, target));
 };
 
 export const stringIncludes = (source: string, target: string): boolean => {
@@ -21,5 +21,14 @@ export const stringIncludes = (source: string, target: string): boolean => {
 };
 
 export const normalizeString = (value: string): string => {
+    if (stringIsEmpty(value)) {
+        return '';
+    }
+
     return value?.trim().toLocaleLowerCase();
 };
+
+export const stringIsEmpty = (value: string) => {
+    return value === undefined || value === null || value <= ' ';
+}
+

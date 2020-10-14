@@ -1,17 +1,17 @@
 <ion-content [fullscreen]="true">
   <ion-row class="header">
     <ion-col>
-      <ion-searchbar class="pis0 search" (ionChange)="applySearch($event)"></ion-searchbar>
+      <ion-searchbar class="pis0 search" (search)="assignFilter($event)" (ionCancel)="assignFilter($event)"></ion-searchbar>
     </ion-col>
     <ion-col>
-      <ion-select value="pokemon" okText="Ok" cancelText="Cancel" class="select">
-        <ion-select-option value="pokemon">Pokemon</ion-select-option>
-        <ion-select-option value="berry">Berry</ion-select-option>
-        <ion-select-option value="generation">Generation</ion-select-option>
+      <ion-select class="select" value="pokemon" [(ngModel)]="filterType" okText="Ok" cancelText="Cancel" >
+        <ion-select-option value="pokemon">Name</ion-select-option>
+        <ion-select-option value="type">Type</ion-select-option>
+        <ion-select-option value="pokemon">Ref. Id</ion-select-option>
       </ion-select>
     </ion-col>
   </ion-row>
   <div id="container">
-    <app-pokemon-card-grid [filterClause]="searchValue"></app-pokemon-card-grid>
+    <app-pokemon-card-grid [filterClause]="searchValue" [filterType]="filterType"></app-pokemon-card-grid>
   </div>
 </ion-content>

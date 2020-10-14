@@ -8,10 +8,11 @@ import { Component } from '@angular/core';
 export class HomePage {
 
   public searchValue: string;
+  public filterType: string;
 
   constructor() {}
 
-  applySearch({target: { value }}) {
-    this.searchValue = value;
+  assignFilter({ target }) {
+    this.searchValue = target.value;
   }
 }

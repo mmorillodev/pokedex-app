@@ -1,8 +1,8 @@
 <div class="pokemon-grid" *ngIf="!loading">
   <app-pokemon-card 
-    *ngFor="let pokemon of (stringIsEmpty(filterClause) ? pokeApiResult.results : pokeApiResult.results.filter(filterHandler.bind(this)))" 
+    *ngFor="let pokemon of (stringIsEmpty(filterClause) ? pokeApiResult.results : tryFilterRequestOtherwise())" 
     name="{{pokemon.name}}" 
-    url="{{pokemon.url}}" 
+    url="{{pokemon.url}}"
     (pokemonFetchComplete)="onPokemonFetchComplete($event)"
   ></app-pokemon-card>
   <span class="no-content">No content to display</span>
