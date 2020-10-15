@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -8,22 +7,16 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class SignupPage implements OnInit {
 
-  public returnUrl = '/home';
-
   public email: string;
   public password: string;
   public repeatPassword: string;
 
-
-  constructor(private route: ActivatedRoute) {}
+  constructor() {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.returnUrl = params.returnUrl;
-    });
   }
 
-  singup() {
+  signup() {
     console.log('email', this.email);
     console.log('password', this.password);
     console.log('repeat password', this.repeatPassword);
