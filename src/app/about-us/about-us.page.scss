@@ -1,0 +1,12 @@
+.card-pokemon{
+    border-radius: 10px;
+
+
+}
+
+.card-pokemon + .card-pokemon {
+    border-radius: 10px;
+
+    box-shadow: inset 10px 10px 10px #000000;;
+    
+}
