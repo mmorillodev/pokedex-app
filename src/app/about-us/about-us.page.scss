@@ -1,12 +1,20 @@
-.card-pokemon{
-    border-radius: 10px;
-
-
+.img-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 15px;
 }
 
-.card-pokemon + .card-pokemon {
+.pokemon-img {
     border-radius: 10px;
+}
 
-    box-shadow: inset 10px 10px 10px #000000;;
-    
+p {
+    text-align: justify;
+    font-size: .9em;
+}
+
+.title{
+    text-align: center;
+    font-size: 1.2em
+
 }

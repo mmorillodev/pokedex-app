@@ -1,43 +1,29 @@
 <ion-header>
-    <ion-toolbar class="header">
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="home" color="secondary" text="">
-        </ion-back-button>
-      </ion-buttons>
-      <ion-title></ion-title>
+  <ion-toolbar class="header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home" color="secondary" text="">
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>About us</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true ">
+  <div class="img-container">
+    <img class="pokemon-img" src="https://www.wallpapertip.com/wmimgs/167-1670382_pokemons-iniciais-de-grama.png"
+      alt="Ilustrative card with grass pokemons">
+  </div>
 
+  <div class="title">
+        <h1 class="">Pokedex Study Company</h1>
+  </div>
 
-
-  <ion-card class="card-pokemon">
-    <ion-card-content>
-
-      <img class="card-pokemon" src="https://www.wallpapertip.com/wmimgs/167-1670382_pokemons-iniciais-de-grama.png"
-        alt="Ilustrative card with grass pokemons">
-
-    </ion-card-content>
-
-  </ion-card>
-
-  <h1 class="ion-padding" style="font-size:1.6em">About ours Pokedex <br>
-      Study Company </h1>
-
-
-  <ion-row class="ion-justify-content-center">
-    <ion-col size="10">
-      <div>
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam consectetur necessitatibus at earum
-          reiciendis vitae eius maiores, natus tempore dolores consequatur et itaque veniam velit ipsum saepe? Ex, sed
-          voluptate!Reiciendis, aut facilis hic inventore dignissimos omnis? Sed odio, amet, quaerat tempora saepe ipsam
-          laudantium harum, deserunt itaque natus vitae laborum exercitationem pariatur reiciendis. Eveniet magni
-          assumenda natus porro cumque!
-        </p>
-      </div>
-    </ion-col>
-
-  </ion-row>
+  <div class="ion-padding">
+    <p>Somos uma equipe composta por pessoas que amam 2 coisas, café e Pokemons. Sendo Devs, sabemos da importancia
+      das informações dos pokemons em nossas jornadas de treinadores, com isso, decidimos criar a Pokedex, que é nada
+      mais que uma forma de nos
+      atualizar e nos manter juntos com os pokemons que tanto amamos.
+    </p>
+  </div>
 
 </ion-content>
