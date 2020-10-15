@@ -2,6 +2,10 @@
   padding-top: 4.375rem;
 }
 
+.menu {
+  border-radius: .5rem;
+}
+
 .pis0 {
   padding-inline-start: unset;
 }
@@ -12,12 +16,17 @@ ion-select {
 
 ion-searchbar {
   --icon-color: white; 
+  --background: #212529;
  }
+
+ion-item {
+  --background: #212529;
+}
 
 .header {
   position: fixed;
   width: 100vw;
-  background: #A02F40;
+  background: #343A40;
   border-radius: 0 0 .5rem .5rem;
 
   & > * {
