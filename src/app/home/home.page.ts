@@ -11,7 +11,11 @@ export class HomePage {
 
   constructor() {}
 
-  assignFilterClause({target: { value }}) {
+  public assignFilterClause({target: { value }}) {
     this.searchValue = value;
+  }
+
+  public openMenu({ target }) {
+    target.classList.toggle('opened');
   }
 }
