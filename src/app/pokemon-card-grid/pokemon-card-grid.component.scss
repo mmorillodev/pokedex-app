@@ -1,0 +1,19 @@
+.pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    padding: 10px 0;
+    gap: 1em;
+
+    .no-content {
+        display: none;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: #707070;
+
+        &:only-child {
+            display: inline;
+        }
+    }
+}
