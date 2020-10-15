@@ -1,9 +1,32 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>signup</ion-title>
+  <ion-toolbar class="header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home" color="secondary" text="">
+      </ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <div class="container">
+    <div class="form">
+      <div class="form__item">
+        <label for="email">Email</label>
+        <input type="text" id="email" [(ngModel)]="email" autocomplete="off">
+      </div>
+      <div class="form__item">
+        <label for="password">Password</label>
+        <input type="password" id="password" [(ngModel)]="password" autocomplete="off"> 
+      </div>
+      <div class="form__item">
+        <label for="password-repeat">Repeat password</label>
+        <input type="password" id="password-repeat" [(ngModel)]="repeatPassword" autocomplete="off"> 
+      </div>
+      <hr>
+      <div>
+        <button class="login" (click)="singup()">Sign up</button>
+      </div>
+      <a href="/login?returnUrl=signup">Already have an account? Sign in now!</a>
+    </div>
+  </div>
 </ion-content>
