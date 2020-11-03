@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { PokemonCardModule } from '../pokemon-card/pokemon-card.module';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -13,7 +15,9 @@ import { PokemonStatsPage } from './pokemon-stats.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    PokemonStatsPageRoutingModule
+    PokemonStatsPageRoutingModule,
+    HttpClientModule,
+    PokemonCardModule
   ],
   declarations: [PokemonStatsPage]
 })
