@@ -24,7 +24,7 @@ export class PokemonCardComponent implements OnInit {
     this.pokemonFetchComplete = new EventEmitter<CompletePokemon>();
   }
 
-  sendInfoByState() {
+  public sendInfoByState() {
     let navigationExtras: NavigationExtras = {
       state: {
         valueToSend: this.infoToPokemonPage()
@@ -33,15 +33,9 @@ export class PokemonCardComponent implements OnInit {
     this.router.navigate(['/pokemon'], navigationExtras);
   }
 
-  infoToPokemonPage() { 
+  private infoToPokemonPage() { 
     let valueToSend = {
-      name: this.name,
-      pokemon_img: this.pokemon.sprites.other['official-artwork'].front_default,
       pokemon_id: this.pokemon.id,
-      type: this.pokemon.types,
-      weight: this.pokemon.weight,
-      height: this.pokemon.height,
-      stats: this.pokemon.stats
     };
 
     return valueToSend;

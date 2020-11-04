@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
+import colors from '../../resources/colors';
 
 import { BASE_POKE_API_URL } from '../../resources/strings';
 import { Pokemon } from '../../interfaces/PokemonSpecies';
 import { PokemonEvolution } from '../../interfaces/PokemonEvolutions';
+import { CompletePokemon } from 'src/interfaces/CompletePokemon';
 
 @Component({
   selector: 'app-pokemon-stats',
@@ -15,29 +17,32 @@ import { PokemonEvolution } from '../../interfaces/PokemonEvolutions';
 })
 export class PokemonStatsPage implements OnInit {
 
+ @Input() public name: string;
+
   public loading = true;
-  public pokemon: any;
+  public fetchCompleted = false;
+  public pokemonByHome: any;
   public pokemonStatus: number[] = []
   private highestStatus: number;
   private pokemonUrl: string[] = []
   public pokemonSpecie: Pokemon;
   public pokemonEvolution: PokemonEvolution;
   public completePokemons: any[] = [];
+  public pokemon: CompletePokemon;
 
   constructor(private elementRef: ElementRef, private route: ActivatedRoute, private router: Router, private httpClient: HttpClient, private loadingController: LoadingController) {
     this.route.queryParams.subscribe(params => {
       let getNav = this.router.getCurrentNavigation();
       if (getNav.extras.state) {
-        this.pokemon = getNav.extras.state.valueToSend;
+        this.pokemonByHome = getNav.extras.state.valueToSend;
       }
     });
   }
 
   public async requestPokemonFromAPI(id: number) {
     try {
-      const response: Pokemon = await this.makeRequest(`${BASE_POKE_API_URL}/pokemon/` + this.pokemon.pokemon_id + `/`) as Pokemon;
-      this.assignResponseToPokemonSpecie(response);
-      this.setPokemonInArray()
+      const response: CompletePokemon = await this.makeRequest(`${BASE_POKE_API_URL}/pokemon/` + id + `/`) as CompletePokemon;
+      this.assignResponseToPokemon(response);
     } catch {
       return
     }
@@ -67,8 +72,16 @@ export class PokemonStatsPage implements OnInit {
       const response: PokemonEvolution = await this.makeRequest(this.pokemonSpecie.evolution_chain.url) as PokemonEvolution;
       this.assignResponseToPokemonEvolution(response);
     } catch {
-      return 
+      return
     }
+  }
+
+  private assignResponseToPokemon(response: CompletePokemon) {
+    this.pokemon = response;
+    this.pokemon.types.forEach(type => {
+      type.type.color = `#${colors[type.type.name]}`;
+    });
+    this.fetchCompleted = true;
   }
 
   private assignResponseToPokemonSpecie(response: Pokemon) {
@@ -132,7 +145,7 @@ export class PokemonStatsPage implements OnInit {
       this.pokemonUrl.push(this.pokemonEvolution.chain.evolves_to[0].species.url)
       this.pokemonUrl.push(this.pokemonEvolution.chain.evolves_to[0].evolves_to[0].species.url)
     } catch {
-      return 
+      return
     }
   }
 
@@ -140,17 +153,34 @@ export class PokemonStatsPage implements OnInit {
     this.completePokemons.push(this.pokemonSpecie)
   }
 
-  public async ngOnInit() {
+  public async changePokemon(id: number) {
+    this.completePokemons.length = 0;
+    this.pokemonUrl.length = 0;
     await this.createLoading('Fetching pokemon info...');
-    await this.requestPokemonSpecieById(this.pokemon.pokemon_id);
-    this.getStatsToArray();
+    await this.requestPokemonFromAPI(id)
+    await this.requestPokemonSpecieById(id);
+    this.getStatsToArray()
     this.highestStatusInArray();
     await this.requestPokemonEvolutionChain();
     this.getPokemoUrl();
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[0]);
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[1]);
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[2])
-    this.dismissLoading()
+    this.dismissLoading();
+  }
+
+  public async ngOnInit() {
+    await this.createLoading('Fetching pokemon info...');
+    await this.requestPokemonFromAPI(this.pokemonByHome.pokemon_id)
+    await this.requestPokemonSpecieById(this.pokemonByHome.pokemon_id);
+    this.getStatsToArray()
+    this.highestStatusInArray();
+    await this.requestPokemonEvolutionChain();
+    this.getPokemoUrl();
+    await this.requestPokemonSpecieByUrl(this.pokemonUrl[0]);
+    await this.requestPokemonSpecieByUrl(this.pokemonUrl[1]);
+    await this.requestPokemonSpecieByUrl(this.pokemonUrl[2])
+    this.dismissLoading();
   }
 }
 

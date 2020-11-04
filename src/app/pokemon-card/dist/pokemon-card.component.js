@@ -62,13 +62,7 @@ var PokemonCardComponent = /** @class */ (function () {
     };
     PokemonCardComponent.prototype.infoToPokemonPage = function () {
         var valueToSend = {
-            name: this.name,
-            pokemon_img: this.pokemon.sprites.other['official-artwork'].front_default,
-            pokemon_id: this.pokemon.id,
-            type: this.pokemon.types,
-            weight: this.pokemon.weight,
-            height: this.pokemon.height,
-            stats: this.pokemon.stats
+            pokemon_id: this.pokemon.id
         };
         return valueToSend;
     };

@@ -44,6 +44,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.PokemonStatsPage = void 0;
 var core_1 = require("@angular/core");
+var colors_1 = require("../../resources/colors");
 var strings_1 = require("../../resources/strings");
 var PokemonStatsPage = /** @class */ (function () {
     function PokemonStatsPage(elementRef, route, router, httpClient, loadingController) {
@@ -54,13 +55,14 @@ var PokemonStatsPage = /** @class */ (function () {
         this.httpClient = httpClient;
         this.loadingController = loadingController;
         this.loading = true;
+        this.fetchCompleted = false;
         this.pokemonStatus = [];
         this.pokemonUrl = [];
         this.completePokemons = [];
         this.route.queryParams.subscribe(function (params) {
             var getNav = _this.router.getCurrentNavigation();
             if (getNav.extras.state) {
-                _this.pokemon = getNav.extras.state.valueToSend;
+                _this.pokemonByHome = getNav.extras.state.valueToSend;
             }
         });
     }
@@ -71,11 +73,10 @@ var PokemonStatsPage = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.makeRequest(strings_1.BASE_POKE_API_URL + "/pokemon/" + this.pokemon.pokemon_id + "/")];
+                        return [4 /*yield*/, this.makeRequest(strings_1.BASE_POKE_API_URL + "/pokemon/" + id + "/")];
                     case 1:
                         response = _b.sent();
-                        this.assignResponseToPokemonSpecie(response);
-                        this.setPokemonInArray();
+                        this.assignResponseToPokemon(response);
                         return [3 /*break*/, 3];
                     case 2:
                         _a = _b.sent();
@@ -145,6 +146,13 @@ var PokemonStatsPage = /** @class */ (function () {
                 }
             });
         });
+    };
+    PokemonStatsPage.prototype.assignResponseToPokemon = function (response) {
+        this.pokemon = response;
+        this.pokemon.types.forEach(function (type) {
+            type.type.color = "#" + colors_1["default"][type.type.name];
+        });
+        this.fetchCompleted = true;
     };
     PokemonStatsPage.prototype.assignResponseToPokemonSpecie = function (response) {
         this.pokemonSpecie = response;
@@ -225,30 +233,36 @@ var PokemonStatsPage = /** @class */ (function () {
     PokemonStatsPage.prototype.setPokemonInArray = function () {
         this.completePokemons.push(this.pokemonSpecie);
     };
-    PokemonStatsPage.prototype.ngOnInit = function () {
+    PokemonStatsPage.prototype.changePokemon = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.createLoading('Fetching pokemon info...')];
+                    case 0:
+                        this.completePokemons.length = 0;
+                        this.pokemonUrl.length = 0;
+                        return [4 /*yield*/, this.createLoading('Fetching pokemon info...')];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, this.requestPokemonSpecieById(this.pokemon.pokemon_id)];
+                        return [4 /*yield*/, this.requestPokemonFromAPI(id)];
                     case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.requestPokemonSpecieById(id)];
+                    case 3:
                         _a.sent();
                         this.getStatsToArray();
                         this.highestStatusInArray();
                         return [4 /*yield*/, this.requestPokemonEvolutionChain()];
-                    case 3:
+                    case 4:
                         _a.sent();
                         this.getPokemoUrl();
                         return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[0])];
-                    case 4:
-                        _a.sent();
-                        return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[1])];
                     case 5:
                         _a.sent();
-                        return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[2])];
+                        return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[1])];
                     case 6:
+                        _a.sent();
+                        return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[2])];
+                    case 7:
                         _a.sent();
                         this.dismissLoading();
                         return [2 /*return*/];
@@ -256,6 +270,43 @@ var PokemonStatsPage = /** @class */ (function () {
             });
         });
     };
+    PokemonStatsPage.prototype.ngOnInit = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.createLoading('Fetching pokemon info...')];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.requestPokemonFromAPI(this.pokemonByHome.pokemon_id)];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.requestPokemonSpecieById(this.pokemonByHome.pokemon_id)];
+                    case 3:
+                        _a.sent();
+                        this.getStatsToArray();
+                        this.highestStatusInArray();
+                        return [4 /*yield*/, this.requestPokemonEvolutionChain()];
+                    case 4:
+                        _a.sent();
+                        this.getPokemoUrl();
+                        return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[0])];
+                    case 5:
+                        _a.sent();
+                        return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[1])];
+                    case 6:
+                        _a.sent();
+                        return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[2])];
+                    case 7:
+                        _a.sent();
+                        this.dismissLoading();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    __decorate([
+        core_1.Input()
+    ], PokemonStatsPage.prototype, "name");
     PokemonStatsPage = __decorate([
         core_1.Component({
             selector: 'app-pokemon-stats',
