@@ -3,6 +3,12 @@
         <ion-back-button defaultHref="home" color="secondary" text="">
         </ion-back-button>
     </ion-buttons>
+    <div slot="end" (click)="setFavorite()" *ngIf="fetchCompleted">
+        <ion-icon class="ion-padding" *ngIf="favorite else noFavorite" name="star" size="large" color="primary"></ion-icon>
+        <ng-template #noFavorite>
+            <ion-icon class="ion-padding" name="star-outline" size="large" color="secondary"></ion-icon>
+        </ng-template>
+    </div>
 </ion-toolbar>
 
 <ion-content [fullscreen]="true">
@@ -25,7 +31,7 @@
     <div class="pokemon-type" *ngIf="fetchCompleted">
         <span class="pokemon-type" *ngFor="let type of pokemon.types" [ngStyle]="{'background': type.type.color}">
             {{type.type.name}}
-          </span>
+        </span>
     </div>
 
     <div class="pokemon-attributes" *ngIf="fetchCompleted">

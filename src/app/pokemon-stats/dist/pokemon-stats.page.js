@@ -47,13 +47,15 @@ var core_1 = require("@angular/core");
 var colors_1 = require("../../resources/colors");
 var strings_1 = require("../../resources/strings");
 var PokemonStatsPage = /** @class */ (function () {
-    function PokemonStatsPage(elementRef, route, router, httpClient, loadingController) {
+    function PokemonStatsPage(offlineStorage, elementRef, route, router, httpClient, loadingController) {
         var _this = this;
+        this.offlineStorage = offlineStorage;
         this.elementRef = elementRef;
         this.route = route;
         this.router = router;
         this.httpClient = httpClient;
         this.loadingController = loadingController;
+        this.favorite = false;
         this.loading = true;
         this.fetchCompleted = false;
         this.pokemonStatus = [];
@@ -233,6 +235,33 @@ var PokemonStatsPage = /** @class */ (function () {
     PokemonStatsPage.prototype.setPokemonInArray = function () {
         this.completePokemons.push(this.pokemonSpecie);
     };
+    PokemonStatsPage.prototype.setFavorite = function () {
+        if (this.favorite == false) {
+            this.favorite = true;
+            this.offlineStorage.setStorage(this.pokemon, this.pokemon.name);
+        }
+        else {
+            this.favorite = false;
+            this.offlineStorage.deleteStorage(this.pokemon.name);
+        }
+    };
+    PokemonStatsPage.prototype.verifyFavorite = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.offlineStorage.checkKey(this.pokemon.name)];
+                    case 1:
+                        if ((_a.sent()) == false) {
+                            this.favorite = false;
+                        }
+                        else {
+                            this.favorite = true;
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     PokemonStatsPage.prototype.changePokemon = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -298,15 +327,13 @@ var PokemonStatsPage = /** @class */ (function () {
                         return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[2])];
                     case 7:
                         _a.sent();
+                        this.verifyFavorite();
                         this.dismissLoading();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    __decorate([
-        core_1.Input()
-    ], PokemonStatsPage.prototype, "name");
     PokemonStatsPage = __decorate([
         core_1.Component({
             selector: 'app-pokemon-stats',

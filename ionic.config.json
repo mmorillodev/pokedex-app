@@ -1,5 +1,7 @@
 {
   "name": "pokedex-app",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

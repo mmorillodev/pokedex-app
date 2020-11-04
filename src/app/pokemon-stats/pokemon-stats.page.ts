@@ -9,6 +9,7 @@ import { BASE_POKE_API_URL } from '../../resources/strings';
 import { Pokemon } from '../../interfaces/PokemonSpecies';
 import { PokemonEvolution } from '../../interfaces/PokemonEvolutions';
 import { CompletePokemon } from 'src/interfaces/CompletePokemon';
+import { OfflineStorageService } from 'src/app/offline_storage.service'
 
 @Component({
   selector: 'app-pokemon-stats',
@@ -17,8 +18,7 @@ import { CompletePokemon } from 'src/interfaces/CompletePokemon';
 })
 export class PokemonStatsPage implements OnInit {
 
- @Input() public name: string;
-
+  public favorite: boolean = false;
   public loading = true;
   public fetchCompleted = false;
   public pokemonByHome: any;
@@ -30,7 +30,7 @@ export class PokemonStatsPage implements OnInit {
   public completePokemons: any[] = [];
   public pokemon: CompletePokemon;
 
-  constructor(private elementRef: ElementRef, private route: ActivatedRoute, private router: Router, private httpClient: HttpClient, private loadingController: LoadingController) {
+  constructor(private offlineStorage: OfflineStorageService, private elementRef: ElementRef, private route: ActivatedRoute, private router: Router, private httpClient: HttpClient, private loadingController: LoadingController) {
     this.route.queryParams.subscribe(params => {
       let getNav = this.router.getCurrentNavigation();
       if (getNav.extras.state) {
@@ -153,6 +153,24 @@ export class PokemonStatsPage implements OnInit {
     this.completePokemons.push(this.pokemonSpecie)
   }
 
+  public setFavorite() {
+    if (this.favorite == false) {
+      this.favorite = true;
+      this.offlineStorage.setStorage(this.pokemon, this.pokemon.name)
+    } else {
+      this.favorite = false;
+      this.offlineStorage.deleteStorage(this.pokemon.name)
+    }
+  }
+
+  public async verifyFavorite() {
+    if (await this.offlineStorage.checkKey(this.pokemon.name) == false) {
+      this.favorite = false;
+    } else {
+      this.favorite = true;
+    }
+  }
+
   public async changePokemon(id: number) {
     this.completePokemons.length = 0;
     this.pokemonUrl.length = 0;
@@ -180,6 +198,7 @@ export class PokemonStatsPage implements OnInit {
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[0]);
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[1]);
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[2])
+    this.verifyFavorite();
     this.dismissLoading();
   }
 }
