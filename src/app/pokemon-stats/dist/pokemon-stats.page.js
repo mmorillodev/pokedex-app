@@ -55,6 +55,7 @@ var PokemonStatsPage = /** @class */ (function () {
         this.router = router;
         this.httpClient = httpClient;
         this.loadingController = loadingController;
+        this.check = false;
         this.favorite = false;
         this.loading = true;
         this.fetchCompleted = false;
@@ -151,6 +152,7 @@ var PokemonStatsPage = /** @class */ (function () {
     };
     PokemonStatsPage.prototype.assignResponseToPokemon = function (response) {
         this.pokemon = response;
+        this.pokemoninPage = response;
         this.pokemon.types.forEach(function (type) {
             type.type.color = "#" + colors_1["default"][type.type.name];
         });
@@ -158,6 +160,9 @@ var PokemonStatsPage = /** @class */ (function () {
     };
     PokemonStatsPage.prototype.assignResponseToPokemonSpecie = function (response) {
         this.pokemonSpecie = response;
+        if (this.check == false) {
+            this.check = true;
+        }
     };
     PokemonStatsPage.prototype.assignResponseToPokemonEvolution = function (response) {
         this.pokemonEvolution = response;
@@ -238,7 +243,7 @@ var PokemonStatsPage = /** @class */ (function () {
     PokemonStatsPage.prototype.setFavorite = function () {
         if (this.favorite == false) {
             this.favorite = true;
-            this.offlineStorage.setStorage(this.pokemon, this.pokemon.name);
+            this.offlineStorage.setStorage(this.pokemoninPage, this.pokemon.name);
         }
         else {
             this.favorite = false;
@@ -259,6 +264,13 @@ var PokemonStatsPage = /** @class */ (function () {
                         }
                         return [2 /*return*/];
                 }
+            });
+        });
+    };
+    PokemonStatsPage.prototype.print = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
             });
         });
     };
@@ -293,6 +305,7 @@ var PokemonStatsPage = /** @class */ (function () {
                         return [4 /*yield*/, this.requestPokemonSpecieByUrl(this.pokemonUrl[2])];
                     case 7:
                         _a.sent();
+                        this.verifyFavorite();
                         this.dismissLoading();
                         return [2 /*return*/];
                 }
@@ -329,6 +342,7 @@ var PokemonStatsPage = /** @class */ (function () {
                         _a.sent();
                         this.verifyFavorite();
                         this.dismissLoading();
+                        this.print();
                         return [2 /*return*/];
                 }
             });

@@ -45,10 +45,12 @@ exports.__esModule = true;
 exports.PokemonCardComponent = void 0;
 var core_1 = require("@angular/core");
 var colors_1 = require("../../resources/colors");
+var strings_1 = require("../../resources/strings");
 var PokemonCardComponent = /** @class */ (function () {
     function PokemonCardComponent(router, httpClient) {
         this.router = router;
         this.httpClient = httpClient;
+        this.favoritePage = false;
         this.fetchCompleted = false;
         this.pokemonFetchComplete = new core_1.EventEmitter();
     }
@@ -67,8 +69,13 @@ var PokemonCardComponent = /** @class */ (function () {
         return valueToSend;
     };
     PokemonCardComponent.prototype.ngOnInit = function () {
-        this.extractRefIdFromPokemonUrl();
-        this.startPokemonFetch();
+        if (this.favoritePage == false) {
+            this.extractRefIdFromPokemonUrl();
+            this.startPokemonFetch();
+        }
+        else {
+            this.startPokemonFetchToFavorite();
+        }
     };
     PokemonCardComponent.prototype.startPokemonFetch = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -85,11 +92,29 @@ var PokemonCardComponent = /** @class */ (function () {
             });
         });
     };
+    PokemonCardComponent.prototype.startPokemonFetchToFavorite = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.makeGetRequest(strings_1.BASE_POKE_API_URL + "/pokemon/" + this.pokemonRefId + "/")];
+                    case 1:
+                        response = _a.sent();
+                        this.assignPokemonAndColor(response);
+                        this.finishPokemonFetch();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     PokemonCardComponent.prototype.finishPokemonFetch = function () {
         this.fetchCompleted = true;
         this.pokemonFetchComplete.emit(this.pokemon);
     };
     PokemonCardComponent.prototype.makeGetRequest = function (url) {
+        return this.httpClient.get(url).toPromise();
+    };
+    PokemonCardComponent.prototype.makeGetRequestToFavorite = function (url) {
         return this.httpClient.get(url).toPromise();
     };
     PokemonCardComponent.prototype.assignPokemonAndColor = function (pokemon) {
@@ -109,8 +134,14 @@ var PokemonCardComponent = /** @class */ (function () {
         core_1.Input()
     ], PokemonCardComponent.prototype, "url");
     __decorate([
+        core_1.Input()
+    ], PokemonCardComponent.prototype, "favoritePage");
+    __decorate([
         core_1.Output()
     ], PokemonCardComponent.prototype, "pokemonFetchComplete");
+    __decorate([
+        core_1.Input()
+    ], PokemonCardComponent.prototype, "pokemonRefId");
     PokemonCardComponent = __decorate([
         core_1.Component({
             selector: 'app-pokemon-card',

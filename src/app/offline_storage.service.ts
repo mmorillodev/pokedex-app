@@ -7,9 +7,11 @@ import { CompletePokemon } from 'src/interfaces/CompletePokemon';
 })
 export class OfflineStorageService {
 
+  public listOfPokemons = [];
+
   constructor(private storage: Storage) { }
 
-  public setStorage(pokemon: CompletePokemon, key: string) {
+  public setStorage(pokemon: any, key: any) {
     this.storage.set(key, pokemon)
   }
 
@@ -24,12 +26,24 @@ export class OfflineStorageService {
     let check: boolean;
     await this.storage.get(key).then((data) => {
       if (data == null) {
-         check = false
+        check = false
       } else {
         check = true;
       }
     });
     return check;
+  }
+
+  public getAllFavorites() {
+    this.listOfPokemons.length = 0;
+    new Promise((resolve, reject) => {
+      this.storage.forEach((value, key, index) => {
+        this.listOfPokemons.push(value);
+      }).then((d) => {
+        resolve(this.listOfPokemons);
+      });
+    });
+    return this.listOfPokemons
   }
 
   public async getLenght() {
@@ -44,9 +58,5 @@ export class OfflineStorageService {
 
   public clear() {
     this.storage.clear()
-  }
-
-  public print() {
-    console.log("Alo")
   }
 }

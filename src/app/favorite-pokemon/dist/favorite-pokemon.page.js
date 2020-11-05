@@ -42,75 +42,35 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.OfflineStorageService = void 0;
+exports.FavoritePokemonPage = void 0;
 var core_1 = require("@angular/core");
-var OfflineStorageService = /** @class */ (function () {
-    function OfflineStorageService(storage) {
-        this.storage = storage;
-        this.listOfPokemons = [];
+var FavoritePokemonPage = /** @class */ (function () {
+    function FavoritePokemonPage(offlineStorage) {
+        this.offlineStorage = offlineStorage;
+        this.completePokemon = [];
     }
-    OfflineStorageService.prototype.setStorage = function (pokemon, key) {
-        this.storage.set(key, pokemon);
+    FavoritePokemonPage.prototype.getPokemonInStorage = function () {
+        this.completePokemon = this.offlineStorage.getAllFavorites();
     };
-    OfflineStorageService.prototype.getStorage = function (key) {
-        var pokemon = this.storage.get(key).then(function (data) {
-            return data;
-        });
-        return pokemon;
+    FavoritePokemonPage.prototype.deleteAll = function () {
+        this.completePokemon.length = 0;
+        this.offlineStorage.clear();
     };
-    OfflineStorageService.prototype.checkKey = function (key) {
-        return __awaiter(this, void 0, void 0, function () {
-            var check;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.storage.get(key).then(function (data) {
-                            if (data == null) {
-                                check = false;
-                            }
-                            else {
-                                check = true;
-                            }
-                        })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/, check];
-                }
-            });
-        });
-    };
-    OfflineStorageService.prototype.getAllFavorites = function () {
-        var _this = this;
-        this.listOfPokemons.length = 0;
-        new Promise(function (resolve, reject) {
-            _this.storage.forEach(function (value, key, index) {
-                _this.listOfPokemons.push(value);
-            }).then(function (d) {
-                resolve(_this.listOfPokemons);
-            });
-        });
-        return this.listOfPokemons;
-    };
-    OfflineStorageService.prototype.getLenght = function () {
+    FavoritePokemonPage.prototype.ngOnInit = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                this.storage.length().then(function (data) {
-                    console.log(data);
-                });
+                this.getPokemonInStorage();
                 return [2 /*return*/];
             });
         });
     };
-    OfflineStorageService.prototype.deleteStorage = function (key) {
-        this.storage.remove(key);
-    };
-    OfflineStorageService.prototype.clear = function () {
-        this.storage.clear();
-    };
-    OfflineStorageService = __decorate([
-        core_1.Injectable({
-            providedIn: 'root'
+    FavoritePokemonPage = __decorate([
+        core_1.Component({
+            selector: 'app-favorite-pokemon',
+            templateUrl: './favorite-pokemon.page.html',
+            styleUrls: ['./favorite-pokemon.page.scss']
         })
-    ], OfflineStorageService);
-    return OfflineStorageService;
+    ], FavoritePokemonPage);
+    return FavoritePokemonPage;
 }());
-exports.OfflineStorageService = OfflineStorageService;
+exports.FavoritePokemonPage = FavoritePokemonPage;

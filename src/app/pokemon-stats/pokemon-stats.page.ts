@@ -18,6 +18,8 @@ import { OfflineStorageService } from 'src/app/offline_storage.service'
 })
 export class PokemonStatsPage implements OnInit {
 
+  public pokemoninPage;
+  public check = false;
   public favorite: boolean = false;
   public loading = true;
   public fetchCompleted = false;
@@ -78,6 +80,7 @@ export class PokemonStatsPage implements OnInit {
 
   private assignResponseToPokemon(response: CompletePokemon) {
     this.pokemon = response;
+    this.pokemoninPage = response
     this.pokemon.types.forEach(type => {
       type.type.color = `#${colors[type.type.name]}`;
     });
@@ -86,6 +89,9 @@ export class PokemonStatsPage implements OnInit {
 
   private assignResponseToPokemonSpecie(response: Pokemon) {
     this.pokemonSpecie = response;
+    if (this.check == false){
+      this.check = true;
+    }
   }
 
   private assignResponseToPokemonEvolution(response: PokemonEvolution) {
@@ -156,7 +162,7 @@ export class PokemonStatsPage implements OnInit {
   public setFavorite() {
     if (this.favorite == false) {
       this.favorite = true;
-      this.offlineStorage.setStorage(this.pokemon, this.pokemon.name)
+      this.offlineStorage.setStorage(this.pokemoninPage, this.pokemon.name)
     } else {
       this.favorite = false;
       this.offlineStorage.deleteStorage(this.pokemon.name)
@@ -169,6 +175,10 @@ export class PokemonStatsPage implements OnInit {
     } else {
       this.favorite = true;
     }
+  }
+
+  public async print(){
+
   }
 
   public async changePokemon(id: number) {
@@ -184,6 +194,7 @@ export class PokemonStatsPage implements OnInit {
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[0]);
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[1]);
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[2])
+    this.verifyFavorite();
     this.dismissLoading();
   }
 
@@ -200,6 +211,7 @@ export class PokemonStatsPage implements OnInit {
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[2])
     this.verifyFavorite();
     this.dismissLoading();
+    this.print()
   }
 }
 
