@@ -26,7 +26,11 @@ const routes: Routes = [
   {
     path: 'about-us',
     loadChildren: () => import('./about-us/about-us.module').then( m => m.AboutUsPageModule)
+  },  {
+    path: 'favorite-pokemon',
+    loadChildren: () => import('./favorite-pokemon/favorite-pokemon.module').then( m => m.FavoritePokemonPageModule)
   }
+
 ];
 
 @NgModule({
