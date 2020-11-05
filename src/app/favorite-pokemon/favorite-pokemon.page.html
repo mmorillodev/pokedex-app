@@ -1,0 +1,21 @@
+<ion-header>
+    <ion-toolbar class="header">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="home" color="secondary" text="">
+            </ion-back-button>
+        </ion-buttons>
+        <ion-title>Favorite</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div>
+        <ion-button expand="full" color="tertiary" (click)="deleteAll()"> Delete All Pokemons</ion-button>
+    </div>
+
+    <div class="pokemon-grid">
+        <app-pokemon-card *ngFor="let pokemon of completePokemon " name="{{pokemon.name}} " pokemonRefId="{{pokemon.id}}" favoritePage="{{true}}">
+        </app-pokemon-card>
+    </div>
+
+</ion-content>

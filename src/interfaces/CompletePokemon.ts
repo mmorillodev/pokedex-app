@@ -1,4 +1,5 @@
 export interface CompletePokemon {
+    name: string;
     id: number;
     abilities: PokemonAbility[];
     sprites: Sprites;
@@ -32,4 +33,6 @@ export interface TypeCompl {
     color: string;
 }
 
-export interface Stats { }
+export interface Stats {
+    base_stat: number
+ }
