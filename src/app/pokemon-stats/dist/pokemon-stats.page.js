@@ -47,14 +47,15 @@ var core_1 = require("@angular/core");
 var colors_1 = require("../../resources/colors");
 var strings_1 = require("../../resources/strings");
 var PokemonStatsPage = /** @class */ (function () {
-    function PokemonStatsPage(offlineStorage, elementRef, route, router, httpClient, loadingController) {
+    function PokemonStatsPage(alertController, offlineStorage, route, router, httpClient, loadingController) {
         var _this = this;
+        this.alertController = alertController;
         this.offlineStorage = offlineStorage;
-        this.elementRef = elementRef;
         this.route = route;
         this.router = router;
         this.httpClient = httpClient;
         this.loadingController = loadingController;
+        this.pokemon_id = 1;
         this.check = false;
         this.favorite = false;
         this.loading = true;
@@ -153,6 +154,7 @@ var PokemonStatsPage = /** @class */ (function () {
     PokemonStatsPage.prototype.assignResponseToPokemon = function (response) {
         this.pokemon = response;
         this.pokemoninPage = response;
+        this.pokemon_id = response.id;
         this.pokemon.types.forEach(function (type) {
             type.type.color = "#" + colors_1["default"][type.type.name];
         });
@@ -267,10 +269,55 @@ var PokemonStatsPage = /** @class */ (function () {
             });
         });
     };
-    PokemonStatsPage.prototype.print = function () {
+    PokemonStatsPage.prototype.swipePokemon = function (value) {
+        this.pokemon_id += value;
+        if (this.pokemon_id == 0 || this.pokemon_id == 1051) {
+            this.pokemon_id = 1;
+            this.presentAlertConfirm();
+        }
+        else {
+            this.changePokemon(this.pokemon_id);
+        }
+    };
+    PokemonStatsPage.prototype.onSwipe = function (event) {
         return __awaiter(this, void 0, void 0, function () {
+            var x;
             return __generator(this, function (_a) {
+                x = Math.abs(event.deltaX) > 40 ? (event.deltaX > 0 ? "Right" : "Left") : "";
+                if (x == 'Right') {
+                    this.swipePokemon(-1);
+                }
+                else if (x == 'Left') {
+                    this.swipePokemon(+1);
+                }
                 return [2 /*return*/];
+            });
+        });
+    };
+    PokemonStatsPage.prototype.presentAlertConfirm = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var alert;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.alertController.create({
+                            header: 'Oops!',
+                            message: 'O único Pokemon presente para este lado é o MissingNo',
+                            buttons: [
+                                {
+                                    text: 'Gotcha!',
+                                    handler: function () {
+                                        console.log('');
+                                    }
+                                }
+                            ]
+                        })];
+                    case 1:
+                        alert = _a.sent();
+                        return [4 /*yield*/, alert.present()];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
             });
         });
     };
@@ -342,7 +389,6 @@ var PokemonStatsPage = /** @class */ (function () {
                         _a.sent();
                         this.verifyFavorite();
                         this.dismissLoading();
-                        this.print();
                         return [2 /*return*/];
                 }
             });

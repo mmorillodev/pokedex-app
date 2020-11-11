@@ -1,8 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import colors from '../../resources/colors';
 
 import { BASE_POKE_API_URL } from '../../resources/strings';
@@ -18,6 +17,7 @@ import { OfflineStorageService } from 'src/app/offline_storage.service'
 })
 export class PokemonStatsPage implements OnInit {
 
+  public pokemon_id: number = 1;
   public pokemoninPage;
   public check = false;
   public favorite: boolean = false;
@@ -32,7 +32,7 @@ export class PokemonStatsPage implements OnInit {
   public completePokemons: any[] = [];
   public pokemon: CompletePokemon;
 
-  constructor(private offlineStorage: OfflineStorageService, private elementRef: ElementRef, private route: ActivatedRoute, private router: Router, private httpClient: HttpClient, private loadingController: LoadingController) {
+  constructor(private alertController: AlertController, private offlineStorage: OfflineStorageService, private route: ActivatedRoute, private router: Router, private httpClient: HttpClient, private loadingController: LoadingController) {
     this.route.queryParams.subscribe(params => {
       let getNav = this.router.getCurrentNavigation();
       if (getNav.extras.state) {
@@ -81,6 +81,7 @@ export class PokemonStatsPage implements OnInit {
   private assignResponseToPokemon(response: CompletePokemon) {
     this.pokemon = response;
     this.pokemoninPage = response
+    this.pokemon_id = response.id
     this.pokemon.types.forEach(type => {
       type.type.color = `#${colors[type.type.name]}`;
     });
@@ -89,7 +90,7 @@ export class PokemonStatsPage implements OnInit {
 
   private assignResponseToPokemonSpecie(response: Pokemon) {
     this.pokemonSpecie = response;
-    if (this.check == false){
+    if (this.check == false) {
       this.check = true;
     }
   }
@@ -177,8 +178,44 @@ export class PokemonStatsPage implements OnInit {
     }
   }
 
-  public async print(){
+  public swipePokemon(value: number) {
+    this.pokemon_id += value;
 
+    if (this.pokemon_id == 0 || this.pokemon_id == 1051) {
+      this.pokemon_id = 1;
+      this.presentAlertConfirm()
+    } else {
+      this.changePokemon(this.pokemon_id)
+    }
+  }
+
+  public async onSwipe(event) {
+    const x =
+      Math.abs(
+        event.deltaX) > 40 ? (event.deltaX > 0 ? "Right" : "Left") : "";
+
+    if (x == 'Right') {
+      this.swipePokemon(-1)
+    } else if (x == 'Left') {
+      this.swipePokemon(+1)
+    }
+  }
+
+  async presentAlertConfirm() {
+    const alert = await this.alertController.create({
+      header: 'Oops!',
+      message: 'O único Pokemon presente para este lado é o MissingNo',
+      buttons: [
+        {
+          text: 'Gotcha!',
+          handler: () => {
+            console.log('');
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   public async changePokemon(id: number) {
@@ -211,7 +248,6 @@ export class PokemonStatsPage implements OnInit {
     await this.requestPokemonSpecieByUrl(this.pokemonUrl[2])
     this.verifyFavorite();
     this.dismissLoading();
-    this.print()
   }
 }
 

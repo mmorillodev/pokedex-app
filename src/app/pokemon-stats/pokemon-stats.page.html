@@ -12,7 +12,7 @@
 </ion-toolbar>
 
 <ion-content [fullscreen]="true">
-    <div class="background" [ngStyle]="{'background': pokemon?.types[0].type.color}">
+    <div class="background" [ngStyle]="{'background': pokemon?.types[0].type.color}" (swipe)="onSwipe($event)">
         <img src="{{pokemon.sprites.other['official-artwork'].front_default}}" *ngIf="fetchCompleted else loading_image">
         <ng-template #loading_image>
             <ion-spinner name="crescent"></ion-spinner>
