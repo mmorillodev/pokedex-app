@@ -4,10 +4,14 @@
         </ion-back-button>
     </ion-buttons>
     <div slot="end" (click)="setFavorite()" *ngIf="fetchCompleted">
-        <ion-icon class="ion-padding" *ngIf="favorite else noFavorite" name="star" size="large" color="primary"></ion-icon>
+        <ion-icon class="ion-padding" *ngIf="favorite else noFavorite" name="star" size="large" color="primary">
+        </ion-icon>
         <ng-template #noFavorite>
             <ion-icon class="ion-padding" name="star-outline" size="large" color="secondary"></ion-icon>
         </ng-template>
+    </div>
+    <div class="ion-padding" slot="end" (click)="openModal()">
+        <ion-icon name="ellipsis-horizontal-outline" size="large"></ion-icon>
     </div>
 </ion-toolbar>
 
@@ -53,49 +57,18 @@
         </ion-text>
     </div>
 
-
-    <div class="pokemon-status__item" *ngIf="fetchCompleted">
-        <span class=" pokemon-HP ">HP</span>
-        <div class="progress-bar__container ">
-            <div class="progress-bar__content " style="background-color: #C72424; " [ngStyle]="{ 'width': getWidghtInPercentual(45)} ">
-                <ion-text class="value "> {{pokemon.stats[0].base_stat}} </ion-text>
-            </div>
-        </div>
-        <br>
-        <span class="pokemon-ATK ">ATK</span>
-        <div class="progress-bar__container ">
-            <div class="progress-bar__content " style="background-color: #EB5757; " [ngStyle]="{ 'width': getWidghtInPercentual(pokemon.stats[1].base_stat)} ">
-                <ion-text class="value "> {{pokemon.stats[1].base_stat}} </ion-text>
-            </div>
-        </div>
-        <br>
-        <span class="pokemon-DEF ">DEF</span>
-        <div class="progress-bar__container ">
-            <div class="progress-bar__content " style="background-color: #A590EF; " [ngStyle]="{ 'width': getWidghtInPercentual(pokemon.stats[2].base_stat)} ">
-                <ion-text class="value "> {{pokemon.stats[2].base_stat}} </ion-text>
-            </div>
-        </div>
-        <br>
-        <span class="pokemon-SPD ">SPD</span>
-        <div class="progress-bar__container ">
-            <div class="progress-bar__content " style="background-color: #2F80ED; " [ngStyle]="{ 'width': getWidghtInPercentual(pokemon.stats[5].base_stat)} ">
-                <ion-text class="value "> {{pokemon.stats[5].base_stat}} </ion-text>
-            </div>
-        </div>
-        <br>
-        <span class="pokemon-SP_A ">SP_A</span>
-        <div class="progress-bar__container ">
-            <div class="progress-bar__content " style="background-color: #A52FED; " [ngStyle]="{ 'width': getWidghtInPercentual(pokemon.stats[3].base_stat)} ">
-                <ion-text class="value "> {{pokemon.stats[3].base_stat}} </ion-text>
-            </div>
-        </div>
-        <br>
-        <span class="pokemon-SP_D ">SP_D</span>
-        <div class="progress-bar__container ">
-            <div class="progress-bar__content " style="background-color: #34C096; " [ngStyle]="{ 'width': getWidghtInPercentual(pokemon.stats[4].base_stat)} ">
-                <ion-text class="value "> {{pokemon.stats[4].base_stat}} </ion-text>
-            </div>
-        </div>
+    <div class="progress-bar" *ngIf="fetchCompleted">
+        <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[0].base_stat)}}" statsValue="{{pokemon.stats[0].base_stat}}" textStats="{{'HP'}}" color="{{'#C72424'}}"></app-progress-bar>
+        <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[1].base_stat)}}" statsValue="{{pokemon.stats[1].base_stat}}" textStats="{{'ATK'}}" color="{{'#EB5757'}}">
+        </app-progress-bar>
+        <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[2].base_stat)}}" statsValue="{{pokemon.stats[2].base_stat}}" textStats="{{'DEF'}}" color="{{'#A590EF'}}">
+        </app-progress-bar>
+        <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[5].base_stat)}}" statsValue="{{pokemon.stats[5].base_stat}}" textStats="{{'VEL'}}" color="{{'#2F80ED'}}">
+        </app-progress-bar>
+        <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[3].base_stat)}}" statsValue="{{pokemon.stats[3].base_stat}}" textStats="{{'SPA'}}" color="{{'#A52FED'}}">
+        </app-progress-bar>
+        <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[4].base_stat)}}" statsValue="{{pokemon.stats[4].base_stat}}" textStats="{{'SPD'}}" color="{{'#34C096'}}">
+        </app-progress-bar>
     </div>
 
     <div class="pokemon-evolutions ">
@@ -104,9 +77,15 @@
         </ion-text>
     </div>
 
-    <div class="pokemon-grid">
+    <div class="pokemon-grid" *ngIf=" specieExist > 2 else specieNotFound">
         <app-pokemon-card *ngFor="let pokemon of completePokemons " name="{{pokemon.name}} " url="{{pokemon.varieties[0].pokemon.url}}" (click)="changePokemon(pokemon.id)">
         </app-pokemon-card>
     </div>
+
+    <ng-template #specieNotFound>
+        <p class="specie-notFound">
+            This Pokemon has no evolution or we did not find anything in the API. Sorry :(
+        </p>
+    </ng-template>
 
 </ion-content>

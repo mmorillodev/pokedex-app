@@ -29,6 +29,14 @@ const routes: Routes = [
   },  {
     path: 'favorite-pokemon',
     loadChildren: () => import('./favorite-pokemon/favorite-pokemon.module').then( m => m.FavoritePokemonPageModule)
+  },
+  {
+    path: 'modal',
+    loadChildren: () => import('./modal/modal.module').then( m => m.ModalPageModule)
+  },
+  {
+    path: 'progress-bar',
+    loadChildren: () => import('./progress-bar/progress-bar.module').then( m => m.ProgressBarPageModule)
   }
 
 ];

@@ -1,0 +1,19 @@
+<div class="pokemon-status__item" *ngIf="module else radius">
+    <span class=" pokemon-HP ">{{textStats}}</span>
+    <div class="progress-bar__container ">
+        <div class="progress-bar__content " [ngStyle]="{ 'width': widght, 'background-color': color}  ">
+            <ion-text class="value "> {{statsValue}} </ion-text>
+        </div>
+    </div>
+</div>
+
+<ng-template #radius>
+    <div class="pokemon-status__item">
+        <span class=" pokemon-HP ">{{textStats}}</span>
+        <div class="progress-bar__container_square ">
+            <div class="progress-bar__content_square " [ngStyle]="{ 'width': widght, 'background-color': color}  ">
+                <ion-text class="value "> {{statsValue}} </ion-text>
+            </div>
+        </div>
+    </div>
+</ng-template>

@@ -8,7 +8,9 @@ import { BASE_POKE_API_URL } from '../../resources/strings';
 import { Pokemon } from '../../interfaces/PokemonSpecies';
 import { PokemonEvolution } from '../../interfaces/PokemonEvolutions';
 import { CompletePokemon } from 'src/interfaces/CompletePokemon';
-import { OfflineStorageService } from 'src/app/offline_storage.service'
+import { OfflineStorageService } from 'src/app/offline_storage.service';
+import { ModalController } from '@ionic/angular';
+import { ModalPage } from '../modal/modal.page';
 
 @Component({
   selector: 'app-pokemon-stats',
@@ -17,9 +19,9 @@ import { OfflineStorageService } from 'src/app/offline_storage.service'
 })
 export class PokemonStatsPage implements OnInit {
 
-  public pokemon_id: number = 1;
-  public pokemoninPage;
-  public check = false;
+  public pokemonInPage: Pokemon;
+  public specieExist: number = 0;
+  public pokemon_id: number;
   public favorite: boolean = false;
   public loading = true;
   public fetchCompleted = false;
@@ -32,7 +34,7 @@ export class PokemonStatsPage implements OnInit {
   public completePokemons: any[] = [];
   public pokemon: CompletePokemon;
 
-  constructor(private alertController: AlertController, private offlineStorage: OfflineStorageService, private route: ActivatedRoute, private router: Router, private httpClient: HttpClient, private loadingController: LoadingController) {
+  constructor(public modalController: ModalController, private alertController: AlertController, private offlineStorage: OfflineStorageService, private route: ActivatedRoute, private router: Router, private httpClient: HttpClient, private loadingController: LoadingController) {
     this.route.queryParams.subscribe(params => {
       let getNav = this.router.getCurrentNavigation();
       if (getNav.extras.state) {
@@ -54,6 +56,8 @@ export class PokemonStatsPage implements OnInit {
     try {
       const response: Pokemon = await this.makeRequest(`${BASE_POKE_API_URL}/pokemon-species/` + id + `/`) as Pokemon;
       this.assignResponseToPokemonSpecie(response);
+      this.pokemonInPage = response;
+      this.specieExist++;
     } catch {
       return
     }
@@ -64,6 +68,7 @@ export class PokemonStatsPage implements OnInit {
       const response: Pokemon = await this.makeRequest(url) as Pokemon;
       this.assignResponseToPokemonSpecie(response);
       this.setPokemonInArray()
+      this.specieExist++;
     } catch {
       return
     }
@@ -80,7 +85,6 @@ export class PokemonStatsPage implements OnInit {
 
   private assignResponseToPokemon(response: CompletePokemon) {
     this.pokemon = response;
-    this.pokemoninPage = response
     this.pokemon_id = response.id
     this.pokemon.types.forEach(type => {
       type.type.color = `#${colors[type.type.name]}`;
@@ -90,9 +94,6 @@ export class PokemonStatsPage implements OnInit {
 
   private assignResponseToPokemonSpecie(response: Pokemon) {
     this.pokemonSpecie = response;
-    if (this.check == false) {
-      this.check = true;
-    }
   }
 
   private assignResponseToPokemonEvolution(response: PokemonEvolution) {
@@ -163,7 +164,7 @@ export class PokemonStatsPage implements OnInit {
   public setFavorite() {
     if (this.favorite == false) {
       this.favorite = true;
-      this.offlineStorage.setStorage(this.pokemoninPage, this.pokemon.name)
+      this.offlineStorage.setStorage(this.pokemon, this.pokemon.name)
     } else {
       this.favorite = false;
       this.offlineStorage.deleteStorage(this.pokemon.name)
@@ -181,10 +182,14 @@ export class PokemonStatsPage implements OnInit {
   public swipePokemon(value: number) {
     this.pokemon_id += value;
 
-    if (this.pokemon_id == 0 || this.pokemon_id == 1051) {
+    if (this.pokemon_id == 0) {
       this.pokemon_id = 1;
       this.presentAlertConfirm()
-    } else {
+    } else if (this.pokemon_id == 894) {
+      this.pokemon_id = 894;
+      this.presentAlertConfirm()
+    }
+    else {
       this.changePokemon(this.pokemon_id)
     }
   }
@@ -204,13 +209,10 @@ export class PokemonStatsPage implements OnInit {
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
       header: 'Oops!',
-      message: 'O único Pokemon presente para este lado é o MissingNo',
+      message: 'The only Pokemon on this side is MissingNo',
       buttons: [
         {
           text: 'Gotcha!',
-          handler: () => {
-            console.log('');
-          }
         }
       ]
     });
@@ -218,9 +220,23 @@ export class PokemonStatsPage implements OnInit {
     await alert.present();
   }
 
+  public async openModal() {
+    const modal = await this.modalController.create({
+      component: ModalPage,
+      componentProps: {
+        'pokemon': this.pokemon,
+        'pokemonSpecie': this.pokemonInPage
+      }
+    });
+
+    return await modal.present();
+  }
+
   public async changePokemon(id: number) {
     this.completePokemons.length = 0;
     this.pokemonUrl.length = 0;
+    this.fetchCompleted = false;
+    this.favorite = false;
     await this.createLoading('Fetching pokemon info...');
     await this.requestPokemonFromAPI(id)
     await this.requestPokemonSpecieById(id);

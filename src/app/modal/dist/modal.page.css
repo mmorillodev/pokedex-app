@@ -1,0 +1,121 @@
+ion-toolbar {
+  display: inline;
+}
+
+.pokemon-type {
+  border-radius: 1.25rem;
+  padding: 13px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  text-transform: capitalize;
+}
+.pokemon-type:not(:last-child) {
+  margin-right: 10px;
+}
+
+.container-type {
+  margin-left: 7%;
+}
+
+.row-1 {
+  display: flex;
+}
+.row-1 .progress-bar {
+  width: 70%;
+  margin-left: 12px;
+}
+.row-1 .background-image {
+  margin-top: 9px;
+  margin-bottom: 10px;
+  width: 150px;
+  border-radius: 8px;
+}
+.row-1 .background-image .img {
+  width: 120px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 15px;
+}
+
+.faixa {
+  margin-top: 18px;
+  padding-top: 8px;
+  width: 100%;
+  height: 35px;
+}
+
+ion-text {
+  text-transform: capitalize;
+}
+
+.flavor-text {
+  padding-left: 20px;
+  font-size: 15px;
+}
+
+.profile {
+  display: inline-flex;
+}
+
+.profile-1 {
+  display: grid;
+  padding: 16px;
+}
+
+.profile-2 {
+  display: grid;
+  padding: 16px;
+}
+
+span {
+  text-transform: capitalize;
+  font-size: 14px;
+  padding: 6px;
+}
+
+.egg-groups {
+  font-size: 14px;
+}
+
+.damage {
+  display: inline-flex;
+}
+
+.double-damage {
+  text-align: center;
+  display: grid;
+  padding: 13px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin-right: 70px;
+}
+.double-damage .pokemon-damage {
+  border-width: thin;
+  border-style: solid;
+  border-color: #969696a8;
+}
+.double-damage span {
+  padding: 3px;
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.half-damage {
+  text-align: center;
+  padding: 13px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  display: grid;
+}
+.half-damage .pokemon-damage {
+  border-width: thin;
+  border-style: solid;
+  border-color: #969696a8;
+}
+.half-damage span {
+  padding: 3px;
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 15px;
+}
