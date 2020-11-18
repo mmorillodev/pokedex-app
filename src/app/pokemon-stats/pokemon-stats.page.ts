@@ -184,10 +184,10 @@ export class PokemonStatsPage implements OnInit {
 
     if (this.pokemon_id == 0) {
       this.pokemon_id = 1;
-      this.presentAlertConfirm()
+      this.presentAlertConfirm('The only Pokemon on this side is MissingNo', 'Gotcha!')
     } else if (this.pokemon_id == 894) {
       this.pokemon_id = 894;
-      this.presentAlertConfirm()
+      this.presentAlertConfirm('The only Pokemon on this side is MissingNo', 'Gotcha!')
     }
     else {
       this.changePokemon(this.pokemon_id)
@@ -206,13 +206,13 @@ export class PokemonStatsPage implements OnInit {
     }
   }
 
-  async presentAlertConfirm() {
+  async presentAlertConfirm(message: string, text: string) {
     const alert = await this.alertController.create({
       header: 'Oops!',
-      message: 'The only Pokemon on this side is MissingNo',
+      message: message,
       buttons: [
         {
-          text: 'Gotcha!',
+          text: text,
         }
       ]
     });
@@ -221,15 +221,19 @@ export class PokemonStatsPage implements OnInit {
   }
 
   public async openModal() {
-    const modal = await this.modalController.create({
-      component: ModalPage,
-      componentProps: {
-        'pokemon': this.pokemon,
-        'pokemonSpecie': this.pokemonInPage
-      }
-    });
+    if (this.pokemonByHome.pokemon_id <= 894) {
+      const modal = await this.modalController.create({
+        component: ModalPage,
+        componentProps: {
+          'pokemon': this.pokemon,
+          'pokemonSpecie': this.pokemonInPage
+        }
+      });
 
-    return await modal.present();
+      return await modal.present();
+    } else {
+      this.presentAlertConfirm('This Pokemon has any advanced Info. Sorry :(', 'Ok!')
+    }
   }
 
   public async changePokemon(id: number) {

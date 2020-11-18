@@ -1,19 +1,21 @@
-<ion-toolbar [ngStyle]="{'background': pokemon?.types[0].type.color}">
-    <ion-buttons slot="start">
-        <ion-back-button defaultHref="home" color="secondary" text="">
-        </ion-back-button>
-    </ion-buttons>
-    <div slot="end" (click)="setFavorite()" *ngIf="fetchCompleted">
-        <ion-icon class="ion-padding" *ngIf="favorite else noFavorite" name="star" size="large" color="primary">
-        </ion-icon>
-        <ng-template #noFavorite>
-            <ion-icon class="ion-padding" name="star-outline" size="large" color="secondary"></ion-icon>
-        </ng-template>
-    </div>
-    <div class="ion-padding" slot="end" (click)="openModal()">
-        <ion-icon name="ellipsis-horizontal-outline" size="large"></ion-icon>
-    </div>
-</ion-toolbar>
+<ion-header [ngStyle]="{'background': pokemon?.types[0].type.color}">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="home" color="secondary" text="">
+            </ion-back-button>
+        </ion-buttons>
+        <div slot="end" (click)="setFavorite()" *ngIf="fetchCompleted">
+            <ion-icon class="ion-padding" *ngIf="favorite else noFavorite" name="star" size="large" color="primary">
+            </ion-icon>
+            <ng-template #noFavorite>
+                <ion-icon class="ion-padding" name="star-outline" size="large" color="secondary"></ion-icon>
+            </ng-template>
+        </div>
+        <div class="ion-padding" slot="end" (click)="openModal()">
+            <ion-icon name="ellipsis-horizontal-outline" size="large"></ion-icon>
+        </div>
+    </ion-toolbar>
+</ion-header>
 
 <ion-content [fullscreen]="true">
     <div class="background" [ngStyle]="{'background': pokemon?.types[0].type.color}" (swipe)="onSwipe($event)">
