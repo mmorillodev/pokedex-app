@@ -7,20 +7,6 @@
     border-radius: 8px;
 }
 
-.progress-bar__container_square .progress-bar__content_square {
-    height: 15px;
-    position: relative;
-    animation: progress-animation 1s;
-}
-
-.progress-bar__container_square {
-    margin-top: 10px;
-    display: inline-block;
-    width: 80%;
-    height: 15px;
-    background-color: #ffffff;
-}
-
 .progress-bar__container .progress-bar__content {
     height: 15px;
     border-radius: 8px;
@@ -35,7 +21,7 @@
     margin-right: 8px;
 }
 
-.pokemon-HP {
+.pokemon-status-name {
     display: inline;
     font-size: 12px;
     color: #ffffff;

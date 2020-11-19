@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AlertController, LoadingController } from '@ionic/angular';
 import colors from '../../resources/colors';
 
@@ -9,6 +8,7 @@ import { Pokemon } from '../../interfaces/PokemonSpecies';
 import { PokemonEvolution } from '../../interfaces/PokemonEvolutions';
 import { CompletePokemon } from 'src/interfaces/CompletePokemon';
 import { OfflineStorageService } from 'src/app/offline_storage.service';
+import { HTTPService } from "../http-service.service";
 import { ModalController } from '@ionic/angular';
 import { ModalPage } from '../modal/modal.page';
 
@@ -19,22 +19,21 @@ import { ModalPage } from '../modal/modal.page';
 })
 export class PokemonStatsPage implements OnInit {
 
-  public pokemonInPage: Pokemon;
-  public specieExist: number = 0;
-  public pokemon_id: number;
   public favorite: boolean = false;
   public loading = true;
   public fetchCompleted = false;
+  public error: boolean = false;
   public pokemonByHome: any;
   public pokemonStatus: number[] = []
-  private highestStatus: number;
-  private pokemonUrl: string[] = []
+  public widthProgressBar: string[] = []
+  public pokemonUrl: string[] = []
+
+  public pokemon: CompletePokemon;
   public pokemonSpecie: Pokemon;
   public pokemonEvolution: PokemonEvolution;
   public completePokemons: any[] = [];
-  public pokemon: CompletePokemon;
 
-  constructor(public modalController: ModalController, private alertController: AlertController, private offlineStorage: OfflineStorageService, private route: ActivatedRoute, private router: Router, private httpClient: HttpClient, private loadingController: LoadingController) {
+  constructor(public modalController: ModalController, private alertController: AlertController, private httpService: HTTPService, private offlineStorage: OfflineStorageService, private route: ActivatedRoute, private router: Router, private loadingController: LoadingController) {
     this.route.queryParams.subscribe(params => {
       let getNav = this.router.getCurrentNavigation();
       if (getNav.extras.state) {
@@ -43,64 +42,28 @@ export class PokemonStatsPage implements OnInit {
     });
   }
 
-  public async requestPokemonFromAPI(id: number) {
-    try {
-      const response: CompletePokemon = await this.makeRequest(`${BASE_POKE_API_URL}/pokemon/` + id + `/`) as CompletePokemon;
-      this.assignResponseToPokemon(response);
-    } catch {
-      return
-    }
-  }
-
-  public async requestPokemonSpecieById(id: number) {
-    try {
-      const response: Pokemon = await this.makeRequest(`${BASE_POKE_API_URL}/pokemon-species/` + id + `/`) as Pokemon;
-      this.assignResponseToPokemonSpecie(response);
-      this.pokemonInPage = response;
-      this.specieExist++;
-    } catch {
-      return
-    }
-  }
-
-  public async requestPokemonSpecieByUrl(url: string) {
-    try {
-      const response: Pokemon = await this.makeRequest(url) as Pokemon;
-      this.assignResponseToPokemonSpecie(response);
-      this.setPokemonInArray()
-      this.specieExist++;
-    } catch {
-      return
-    }
-  }
-
-  public async requestPokemonEvolutionChain() {
-    try {
-      const response: PokemonEvolution = await this.makeRequest(this.pokemonSpecie.evolution_chain.url) as PokemonEvolution;
-      this.assignResponseToPokemonEvolution(response);
-    } catch {
-      return
-    }
-  }
-
-  private assignResponseToPokemon(response: CompletePokemon) {
+  public async assignResponseToPokemon(id: number) {
+    const response = await this.httpService.requestPokemonFromAPI(`${BASE_POKE_API_URL}/pokemon/`, id)
     this.pokemon = response;
-    this.pokemon_id = response.id
     this.pokemon.types.forEach(type => {
       type.type.color = `#${colors[type.type.name]}`;
     });
     this.fetchCompleted = true;
   }
 
-  private assignResponseToPokemonSpecie(response: Pokemon) {
+  public async assignPokemonSpecieById(id: number) {
+    const response = await this.httpService.requestPokemonSpecieById(`${BASE_POKE_API_URL}/pokemon-species/`, id)
     this.pokemonSpecie = response;
   }
 
-  private assignResponseToPokemonEvolution(response: PokemonEvolution) {
-    this.pokemonEvolution = response;
+  public async assignPokemonSpecieByUrl(url: string) {
+    const response = await this.httpService.requestPokemonSpecieByUrl(url)
+    this.completePokemons.push(response)
   }
-  private makeRequest(url: string): Promise<any> {
-    return this.httpClient.get(url).toPromise();
+
+  public async assignEvolutionChain() {
+    const response = await this.httpService.requestPokemonEvolutionChain(this.pokemonSpecie.evolution_chain.url)
+    this.pokemonEvolution = response;
   }
 
   private getStatsToArray() {
@@ -111,14 +74,15 @@ export class PokemonStatsPage implements OnInit {
   }
 
   private highestStatusInArray() {
-    this.highestStatus = this.pokemonStatus.map((x) => x).sort(function (a, b) { return b - a; })[0];
+    return this.pokemonStatus.map((x) => x).sort(function (a, b) { return b - a; })[0];
   }
 
-  public getWidghtInPercentual(pokemonStatus: number) {
-    let newHighestStatus = this.highestStatus + 20
-    pokemonStatus *= 100;
-    let percentual = (pokemonStatus / newHighestStatus).toString() + "%";
-    return percentual;
+  public getWidghtInPercentual() {
+    for (let status of this.pokemon.stats) {
+      let stat = status.base_stat * 100
+      let percentual = (stat / (this.highestStatusInArray() + 20)).toString() + "%";
+      this.widthProgressBar.push(percentual)
+    }
   }
 
   public formatPokemonAtributes(atribute: string) {
@@ -152,13 +116,13 @@ export class PokemonStatsPage implements OnInit {
       this.pokemonUrl.push(this.pokemonEvolution.chain.species.url)
       this.pokemonUrl.push(this.pokemonEvolution.chain.evolves_to[0].species.url)
       this.pokemonUrl.push(this.pokemonEvolution.chain.evolves_to[0].evolves_to[0].species.url)
-    } catch {
+    } catch (e) {
       return
     }
   }
 
-  public setPokemonInArray() {
-    this.completePokemons.push(this.pokemonSpecie)
+  public setPokemonInArray(response: Pokemon) {
+    this.completePokemons.push(response)
   }
 
   public setFavorite() {
@@ -180,17 +144,15 @@ export class PokemonStatsPage implements OnInit {
   }
 
   public swipePokemon(value: number) {
-    this.pokemon_id += value;
+    let pokeId = this.pokemon.id + value;
 
-    if (this.pokemon_id == 0) {
-      this.pokemon_id = 1;
+    if (pokeId == 0) {
       this.presentAlertConfirm('The only Pokemon on this side is MissingNo', 'Gotcha!')
-    } else if (this.pokemon_id == 894) {
-      this.pokemon_id = 894;
+    } else if (pokeId == 894) {
       this.presentAlertConfirm('The only Pokemon on this side is MissingNo', 'Gotcha!')
     }
     else {
-      this.changePokemon(this.pokemon_id)
+      this.changePokemon(pokeId)
     }
   }
 
@@ -226,7 +188,7 @@ export class PokemonStatsPage implements OnInit {
         component: ModalPage,
         componentProps: {
           'pokemon': this.pokemon,
-          'pokemonSpecie': this.pokemonInPage
+          'pokemonSpecie': this.pokemonSpecie
         }
       });
 
@@ -236,38 +198,53 @@ export class PokemonStatsPage implements OnInit {
     }
   }
 
-  public async changePokemon(id: number) {
+  private async iterateUrlPokemon() {
+    for (let url of this.pokemonUrl) {
+      await this.assignPokemonSpecieByUrl(url)
+    }
+  }
+
+  private resetVariable() {
     this.completePokemons.length = 0;
     this.pokemonUrl.length = 0;
     this.fetchCompleted = false;
     this.favorite = false;
+    this.widthProgressBar.length = 0
+  }
+
+  public async changePokemon(id: number) {
+    this.resetVariable()
     await this.createLoading('Fetching pokemon info...');
-    await this.requestPokemonFromAPI(id)
-    await this.requestPokemonSpecieById(id);
+    await this.assignResponseToPokemon(id)
     this.getStatsToArray()
     this.highestStatusInArray();
-    await this.requestPokemonEvolutionChain();
+    this.getWidghtInPercentual()
+    await this.assignPokemonSpecieById(id);
+    await this.assignEvolutionChain();
     this.getPokemoUrl();
-    await this.requestPokemonSpecieByUrl(this.pokemonUrl[0]);
-    await this.requestPokemonSpecieByUrl(this.pokemonUrl[1]);
-    await this.requestPokemonSpecieByUrl(this.pokemonUrl[2])
+    await this.iterateUrlPokemon()
     this.verifyFavorite();
     this.dismissLoading();
   }
 
   public async ngOnInit() {
-    await this.createLoading('Fetching pokemon info...');
-    await this.requestPokemonFromAPI(this.pokemonByHome.pokemon_id)
-    await this.requestPokemonSpecieById(this.pokemonByHome.pokemon_id);
-    this.getStatsToArray()
-    this.highestStatusInArray();
-    await this.requestPokemonEvolutionChain();
-    this.getPokemoUrl();
-    await this.requestPokemonSpecieByUrl(this.pokemonUrl[0]);
-    await this.requestPokemonSpecieByUrl(this.pokemonUrl[1]);
-    await this.requestPokemonSpecieByUrl(this.pokemonUrl[2])
-    this.verifyFavorite();
-    this.dismissLoading();
+    try {
+      await this.createLoading('Fetching pokemon info...');
+      await this.assignResponseToPokemon(this.pokemonByHome.pokemon_id)
+      this.getStatsToArray()
+      this.highestStatusInArray();
+      this.getWidghtInPercentual()
+      await this.assignPokemonSpecieById(this.pokemonByHome.pokemon_id);
+      await this.assignEvolutionChain();
+      this.getPokemoUrl();
+      await this.iterateUrlPokemon()
+      this.verifyFavorite();
+      this.dismissLoading();
+    } catch {
+      this.error = true;
+      this.dismissLoading();
+      await this.presentAlertConfirm('There was an error performing this action. Sorry :(', 'Ok')
+    }
   }
 }
 

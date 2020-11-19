@@ -13,21 +13,15 @@ export class ProgressBarPage implements OnInit {
   @Input() statsValue: number;
   @Input() textStats: string;
   @Input() color: string;
-  @Input() module: boolean = true;
 
   constructor(private elementRef: ElementRef) { }
 
-  public delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-}
-
-  public async setStyle(value: string) {
-    await this.elementRef.nativeElement.style.setProperty('--widgth', value);
+  public setStyle(value: string) {
+    this.elementRef.nativeElement.style.setProperty('--widgth', value);
   }
 
-  async ngOnInit() {
-    await this.delay(250);
-    await this.setStyle(this.widght)
+  ngOnInit() {
+    this.setStyle(this.widght)
   }
 
 }
