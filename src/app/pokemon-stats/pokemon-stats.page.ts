@@ -214,17 +214,25 @@ export class PokemonStatsPage implements OnInit {
 
   public async changePokemon(id: number) {
     this.resetVariable()
-    await this.createLoading('Fetching pokemon info...');
-    await this.assignResponseToPokemon(id)
-    this.getStatsToArray()
-    this.highestStatusInArray();
-    this.getWidghtInPercentual()
-    await this.assignPokemonSpecieById(id);
-    await this.assignEvolutionChain();
-    this.getPokemoUrl();
-    await this.iterateUrlPokemon()
-    this.verifyFavorite();
-    this.dismissLoading();
+    try {
+      await this.createLoading('Fetching pokemon info...');
+      await this.assignResponseToPokemon(id)
+      this.getStatsToArray()
+      this.highestStatusInArray();
+      this.getWidghtInPercentual()
+      if (this.pokemon.id < 894) {
+        await this.assignPokemonSpecieById(id);
+      await this.assignEvolutionChain();
+      this.getPokemoUrl();
+      await this.iterateUrlPokemon()
+      }
+      this.verifyFavorite();
+      this.dismissLoading();
+    } catch {
+      this.error = true;
+      this.dismissLoading();
+      await this.presentAlertConfirm('There was an error performing this action. Sorry :(', 'Ok')
+    }
   }
 
   public async ngOnInit() {
@@ -234,10 +242,12 @@ export class PokemonStatsPage implements OnInit {
       this.getStatsToArray()
       this.highestStatusInArray();
       this.getWidghtInPercentual()
-      await this.assignPokemonSpecieById(this.pokemonByHome.pokemon_id);
+      if (this.pokemon.id < 894) {
+        await this.assignPokemonSpecieById(this.pokemonByHome.pokemon_id);
       await this.assignEvolutionChain();
       this.getPokemoUrl();
       await this.iterateUrlPokemon()
+      }
       this.verifyFavorite();
       this.dismissLoading();
     } catch {
