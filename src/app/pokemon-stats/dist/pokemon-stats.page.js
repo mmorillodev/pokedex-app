@@ -46,16 +46,18 @@ exports.PokemonStatsPage = void 0;
 var core_1 = require("@angular/core");
 var colors_1 = require("../../resources/colors");
 var strings_1 = require("../../resources/strings");
+var modal_page_1 = require("../modal/modal.page");
 var PokemonStatsPage = /** @class */ (function () {
-    function PokemonStatsPage(offlineStorage, elementRef, route, router, httpClient, loadingController) {
+    function PokemonStatsPage(modalController, alertController, offlineStorage, route, router, httpClient, loadingController) {
         var _this = this;
+        this.modalController = modalController;
+        this.alertController = alertController;
         this.offlineStorage = offlineStorage;
-        this.elementRef = elementRef;
         this.route = route;
         this.router = router;
         this.httpClient = httpClient;
         this.loadingController = loadingController;
-        this.check = false;
+        this.specieExist = 0;
         this.favorite = false;
         this.loading = true;
         this.fetchCompleted = false;
@@ -100,6 +102,8 @@ var PokemonStatsPage = /** @class */ (function () {
                     case 1:
                         response = _b.sent();
                         this.assignResponseToPokemonSpecie(response);
+                        this.pokemonInPage = response;
+                        this.specieExist++;
                         return [3 /*break*/, 3];
                     case 2:
                         _a = _b.sent();
@@ -121,6 +125,7 @@ var PokemonStatsPage = /** @class */ (function () {
                         response = _b.sent();
                         this.assignResponseToPokemonSpecie(response);
                         this.setPokemonInArray();
+                        this.specieExist++;
                         return [3 /*break*/, 3];
                     case 2:
                         _a = _b.sent();
@@ -152,7 +157,7 @@ var PokemonStatsPage = /** @class */ (function () {
     };
     PokemonStatsPage.prototype.assignResponseToPokemon = function (response) {
         this.pokemon = response;
-        this.pokemoninPage = response;
+        this.pokemon_id = response.id;
         this.pokemon.types.forEach(function (type) {
             type.type.color = "#" + colors_1["default"][type.type.name];
         });
@@ -160,9 +165,6 @@ var PokemonStatsPage = /** @class */ (function () {
     };
     PokemonStatsPage.prototype.assignResponseToPokemonSpecie = function (response) {
         this.pokemonSpecie = response;
-        if (this.check == false) {
-            this.check = true;
-        }
     };
     PokemonStatsPage.prototype.assignResponseToPokemonEvolution = function (response) {
         this.pokemonEvolution = response;
@@ -243,7 +245,7 @@ var PokemonStatsPage = /** @class */ (function () {
     PokemonStatsPage.prototype.setFavorite = function () {
         if (this.favorite == false) {
             this.favorite = true;
-            this.offlineStorage.setStorage(this.pokemoninPage, this.pokemon.name);
+            this.offlineStorage.setStorage(this.pokemon, this.pokemon.name);
         }
         else {
             this.favorite = false;
@@ -267,10 +269,76 @@ var PokemonStatsPage = /** @class */ (function () {
             });
         });
     };
-    PokemonStatsPage.prototype.print = function () {
+    PokemonStatsPage.prototype.swipePokemon = function (value) {
+        this.pokemon_id += value;
+        if (this.pokemon_id == 0) {
+            this.pokemon_id = 1;
+            this.presentAlertConfirm();
+        }
+        else if (this.pokemon_id == 894) {
+            this.pokemon_id = 894;
+            this.presentAlertConfirm();
+        }
+        else {
+            this.changePokemon(this.pokemon_id);
+        }
+    };
+    PokemonStatsPage.prototype.onSwipe = function (event) {
         return __awaiter(this, void 0, void 0, function () {
+            var x;
             return __generator(this, function (_a) {
+                x = Math.abs(event.deltaX) > 40 ? (event.deltaX > 0 ? "Right" : "Left") : "";
+                if (x == 'Right') {
+                    this.swipePokemon(-1);
+                }
+                else if (x == 'Left') {
+                    this.swipePokemon(+1);
+                }
                 return [2 /*return*/];
+            });
+        });
+    };
+    PokemonStatsPage.prototype.presentAlertConfirm = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var alert;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.alertController.create({
+                            header: 'Oops!',
+                            message: 'The only Pokemon on this side is MissingNo',
+                            buttons: [
+                                {
+                                    text: 'Gotcha!'
+                                }
+                            ]
+                        })];
+                    case 1:
+                        alert = _a.sent();
+                        return [4 /*yield*/, alert.present()];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PokemonStatsPage.prototype.openModal = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var modal;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.modalController.create({
+                            component: modal_page_1.ModalPage,
+                            componentProps: {
+                                'pokemon': this.pokemon,
+                                'pokemonSpecie': this.pokemonInPage
+                            }
+                        })];
+                    case 1:
+                        modal = _a.sent();
+                        return [4 /*yield*/, modal.present()];
+                    case 2: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
@@ -281,6 +349,8 @@ var PokemonStatsPage = /** @class */ (function () {
                     case 0:
                         this.completePokemons.length = 0;
                         this.pokemonUrl.length = 0;
+                        this.fetchCompleted = false;
+                        this.favorite = false;
                         return [4 /*yield*/, this.createLoading('Fetching pokemon info...')];
                     case 1:
                         _a.sent();
@@ -342,7 +412,6 @@ var PokemonStatsPage = /** @class */ (function () {
                         _a.sent();
                         this.verifyFavorite();
                         this.dismissLoading();
-                        this.print();
                         return [2 /*return*/];
                 }
             });

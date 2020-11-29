@@ -4,17 +4,18 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { SignupPageRoutingModule } from './signup-routing.module';
+import { ProgressBarPageRoutingModule } from './progress-bar-routing.module';
 
-import { SignupPage } from './signup.page';
+import { ProgressBarPage } from './progress-bar.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SignupPageRoutingModule
+    ProgressBarPageRoutingModule
   ],
-  declarations: [SignupPage]
+  declarations: [ProgressBarPage],
+  exports: [ProgressBarPage]
 })
-export class SignupPageModule {}
+export class ProgressBarPageModule {}

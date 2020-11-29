@@ -77,81 +77,8 @@ ion-toolbar {
   padding-top: 1.5rem;
 }
 
-.pokemon-HP {
-  display: inline;
-  font-size: 12px;
-  color: #686669;
-  font-weight: bold;
-  margin-right: 32px;
-}
-
-.pokemon-ATK {
-  display: inline;
-  font-size: 12px;
-  color: #686669;
-  font-weight: bold;
-  margin-right: 25px;
-}
-
-.pokemon-DEF {
-  display: inline;
-  font-size: 12px;
-  color: #686669;
-  font-weight: bold;
-  margin-right: 25px;
-}
-
-.pokemon-SPD {
-  display: inline;
-  font-size: 12px;
-  color: #686669;
-  font-weight: bold;
-  margin-right: 25px;
-}
-
-.pokemon-SP_A {
-  display: inline;
-  font-size: 12px;
-  color: #686669;
-  font-weight: bold;
-  margin-right: 19px;
-}
-
-.pokemon-SP_D {
-  display: inline;
-  font-size: 12px;
-  color: #686669;
-  font-weight: bold;
-  margin-right: 19px;
-}
-
-.pokemon-status__item {
-  padding-top: 0.5rem;
-  justify-content: space-evenly;
-  width: 80%;
-  margin: 0 auto;
-}
-
-.progress-bar__container {
-  margin-top: 10px;
-  display: inline-block;
-  width: 80%;
-  height: 15px;
-  background-color: #DEDEDE;
-  border-radius: 8px;
-}
-
-.progress-bar__container .progress-bar__content {
-  height: 15px;
-  border-radius: 8px;
-  position: relative;
-}
-
-.value {
-  font-size: 11px;
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 8px;
+.progress-bar {
+  text-align: center;
 }
 
 .pokemon-evolutions {
@@ -175,4 +102,10 @@ ion-toolbar {
 }
 .pokemon-grid .no-content:only-child {
   display: inline;
+}
+
+.specie-notFound {
+  text-align: center;
+  font-size: 15px;
+  color: grey;
 }

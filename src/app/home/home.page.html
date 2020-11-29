@@ -7,16 +7,16 @@
         </ion-header>
         <ion-content>
             <ion-list>
-                <ion-item routerLink="/login">
-                    <ion-icon slot="start" src="assets\custom-ion-icons\user-profile.svg"></ion-icon>
-                    <ion-label>Login | Sign up</ion-label>
+                <ion-item routerLink="/home">
+                    <ion-icon slot="start" name="home" color="secondary"></ion-icon>
+                    <ion-label>Home</ion-label>
                 </ion-item>
                 <ion-item routerLink="/favorite-pokemon">
                     <ion-icon slot="start" name="star" color="secondary"></ion-icon>
                     <ion-label>Favorites</ion-label>
                 </ion-item>
                 <ion-item routerLink="/about-us">
-                    <ion-icon slot="start" src="assets\custom-ion-icons\about.svg"></ion-icon>
+                    <ion-icon slot="start" name="information-circle" color="secondary"></ion-icon>
                     <ion-label>About Us</ion-label>
                 </ion-item>
             </ion-list>
@@ -29,7 +29,7 @@
     <ion-row class="header">
         <ion-col>
             <ion-menu-button color="secondary"></ion-menu-button>
-            <ion-searchbar class="pis0 search" (search)="assignFilterClause($event)" (ionCancel)="assignFilterClause($event)"></ion-searchbar>
+            <ion-searchbar class="pis0" (search)="assignFilterClause($event)" (ionCancel)="assignFilterClause($event)"></ion-searchbar>
         </ion-col>
     </ion-row>
     <div id="container">

@@ -16,19 +16,20 @@ const routes: Routes = [
     loadChildren: () => import('./pokemon-stats/pokemon-stats.module').then( m => m.PokemonStatsPageModule)
   },
   {
-    path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
-  },
-  {
-    path: 'signup',
-    loadChildren: () => import('./signup/signup.module').then( m => m.SignupPageModule)
-  },
-  {
     path: 'about-us',
     loadChildren: () => import('./about-us/about-us.module').then( m => m.AboutUsPageModule)
-  },  {
+  },
+  {
     path: 'favorite-pokemon',
     loadChildren: () => import('./favorite-pokemon/favorite-pokemon.module').then( m => m.FavoritePokemonPageModule)
+  },
+  {
+    path: 'modal',
+    loadChildren: () => import('./modal/modal.module').then( m => m.ModalPageModule)
+  },
+  {
+    path: 'progress-bar',
+    loadChildren: () => import('./progress-bar/progress-bar.module').then( m => m.ProgressBarPageModule)
   }
 
 ];

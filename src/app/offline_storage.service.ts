@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { CompletePokemon } from 'src/interfaces/CompletePokemon';
 
 @Injectable({
   providedIn: 'root'
