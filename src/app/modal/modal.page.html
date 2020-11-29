@@ -1,0 +1,114 @@
+<ion-header [ngStyle]="{'background': pokemon?.types[0].type.color}">
+    <ion-toolbar>
+        <ion-buttons class="ion-padding" slot="start" (click)="closeModal()">
+            <ion-icon name="arrow-back" size="large"></ion-icon>
+        </ion-buttons>
+        <ion-title style="text-transform: capitalize;">{{pokemon.name}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+    <ng-template #loading_image>
+        <ion-spinner name="crescent"></ion-spinner>
+    </ng-template>
+
+    <div class="row-1">
+        <div class="background-image" [ngStyle]="{'background': pokemon?.types[0].type.color}" *ngIf="fetchCompleted else loading_image">
+            <div class="img">
+                <img src="{{pokemon.sprites.other['official-artwork'].front_default}}">
+            </div>
+        </div>
+
+        <div class="progress-bar" *ngIf="fetchCompleted else loading_image">
+            <div class="container-type">
+                <div class="pokemon-type">
+                    <span class="pokemon-type" *ngFor="let type of pokemon.types" [ngStyle]="{'background': type.type.color}">
+                        {{type.type.name}}
+                    </span>
+                </div>
+            </div>
+            <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[0].base_stat)}}" statsValue="{{pokemon.stats[0].base_stat}}" textStats="{{'HP'}}" color="{{'#C72424'}}">
+            </app-progress-bar>
+            <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[1].base_stat)}}" statsValue="{{pokemon.stats[1].base_stat}}" textStats="{{'ATK'}}" color="{{'#EB5757'}}">
+            </app-progress-bar>
+            <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[2].base_stat)}}" statsValue="{{pokemon.stats[2].base_stat}}" textStats="{{'DEF'}}" color="{{'#A590EF'}}">
+            </app-progress-bar>
+            <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[5].base_stat)}}" statsValue="{{pokemon.stats[5].base_stat}}" textStats="{{'VEL'}}" color="{{'#2F80ED'}}">
+            </app-progress-bar>
+            <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[3].base_stat)}}" statsValue="{{pokemon.stats[3].base_stat}}" textStats="{{'SPA'}}" color="{{'#A52FED'}}">
+            </app-progress-bar>
+            <app-progress-bar widght="{{getWidghtInPercentual(pokemon.stats[4].base_stat)}}" statsValue="{{pokemon.stats[4].base_stat}}" textStats="{{'SPD'}}" color="{{'#34C096'}}">
+            </app-progress-bar>
+        </div>
+    </div>
+
+    <div class="faixa" [ngStyle]="{'background': pokemon?.types[0].type.color}">
+        <ion-text class="ion-padding">
+            {{pokemon.name}}
+        </ion-text>
+    </div>
+
+    <p class="flavor-text">
+        {{pokemonSpecie.flavor_text_entries[9].flavor_text}}
+    </p>
+
+    <div class="faixa" [ngStyle]="{'background': pokemon?.types[0].type.color}">
+        <ion-text class="ion-padding">
+            Profile
+        </ion-text>
+    </div>
+
+    <div class="profile" *ngIf="fetchCompleted else loading_image">
+        <div class="profile-1">
+            <span class="">
+                Weight: {{formatPokemonAtributes(pokemon.weight.toString())}} kg
+            </span>
+            <span class="">
+                Capture Rate: {{pokemonSpecie.capture_rate}}
+            </span>
+            <span class="">
+                Egg Groups: <span class="egg-groups" *ngFor="let egg of pokemonSpecie.egg_groups">
+                    {{ egg.name.toString() }}
+                </span>
+            </span>
+        </div>
+        <div class="profile-2">
+            <span class="">
+                Height: {{formatPokemonAtributes(pokemon.height.toString())}} m
+            </span>
+            <span class="" *ngIf="genderM != null || genderF != null else NA">
+                Gender Ratio: <ion-icon name="male"></ion-icon> {{genderM}} <ion-icon name="female"></ion-icon>
+                {{genderF}}
+            </span>
+            <ng-template #NA>
+                <span>
+                    Gender Ratio: N/A
+                </span>
+            </ng-template>
+            <span class="">
+                Growth Rate: {{pokemonSpecie.growth_rate.name}}
+            </span>
+        </div>
+    </div>
+
+    <div class="faixa" [ngStyle]="{'background': pokemon?.types[0].type.color}">
+        <ion-text class="ion-padding">
+            Damage When Attacked
+        </ion-text>
+    </div>
+
+    <div class="ion-padding" *ngIf="fetchCompleted">
+        <div class="damage">
+            <div class="double-damage">
+                <span class="pokemon-damage" *ngFor="let type of typesPokemon" [ngStyle]="{'background': getColor(type.toString())}">
+                    {{type}} 2x
+                </span>
+            </div>
+            <div class="half-damage">
+                <span class="pokemon-damage" *ngFor="let type of halfDamage" [ngStyle]="{'background': getColor(type.toString())}">
+                    {{type}} 0.5x
+                </span>
+            </div>
+        </div>
+    </div>

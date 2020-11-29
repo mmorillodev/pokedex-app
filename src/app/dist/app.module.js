@@ -23,7 +23,7 @@ var AppModule = /** @class */ (function () {
         core_1.NgModule({
             declarations: [app_component_1.AppComponent],
             entryComponents: [],
-            imports: [platform_browser_1.BrowserModule, angular_1.IonicModule.forRoot(), app_routing_module_1.AppRoutingModule, storage_1.IonicStorageModule.forRoot()],
+            imports: [platform_browser_1.BrowserModule, angular_1.IonicModule.forRoot(), app_routing_module_1.AppRoutingModule, storage_1.IonicStorageModule.forRoot(), platform_browser_1.HammerModule],
             providers: [
                 ngx_2.StatusBar,
                 ngx_1.SplashScreen,
